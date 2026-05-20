@@ -1,0 +1,15 @@
+{
+  "brand": {
+    "name": "QBazaar",
+    "tagline": "Qatar's friendly classifieds marketplace"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong, please retry",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit"
+  }
+}
