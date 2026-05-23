@@ -14,9 +14,11 @@ return new class extends Migration
             $table->id();
             $table->string('log_name')->nullable()->index();
             $table->text('description');
-            $table->nullableMorphs('subject', 'subject');
+            // QBazaar uses ULID primary keys on User (and most aggregates),
+            // so the morph keys need to be ULID-shaped, not unsignedBigInteger.
+            $table->nullableUlidMorphs('subject', 'subject');
             $table->string('event')->nullable();
-            $table->nullableMorphs('causer', 'causer');
+            $table->nullableUlidMorphs('causer', 'causer');
             $table->json('attribute_changes')->nullable();
             $table->json('properties')->nullable();
             $table->timestamps();

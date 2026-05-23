@@ -25,6 +25,5 @@ parameters:
     - bootstrap/cache/*
     - storage/*
     - vendor/*
-    - .scribe/*
 
   treatPhpDocTypesAsCertain: false

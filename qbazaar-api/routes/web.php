@@ -10,14 +10,11 @@ Route::get('/', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Swagger UI — Interactive API explorer
+| Swagger UI — single source of API docs
 |--------------------------------------------------------------------------
 | Loads the OpenAPI spec from qbazaar-contracts/openapi/v1.yaml (served by
-| /api/v1/openapi.yaml) and renders Swagger UI from CDN. Available at /swagger.
-|
-| Scribe docs (/docs) stay separate — those are auto-derived from PHPDoc as
-| backup documentation. The contract spec is the single source of truth.
+| /api/v1/openapi.yaml) and renders Swagger UI from CDN.
+| Available at /swagger and the canonical /docs.
 */
-Route::get('/swagger', function () {
-    return view('swagger');
-})->name('swagger.ui');
+Route::view('/swagger', 'swagger')->name('swagger.ui');
+Route::view('/docs', 'swagger')->name('docs');

@@ -9,7 +9,6 @@
         "php": "^8.2",
         "filament/filament": "^4.0",
         "intervention/image": "^4.1",
-        "knuckleswtf/scribe": "^5.10",
         "laravel-notification-channels/fcm": "^6.1",
         "laravel/framework": "^12.0",
         "laravel/horizon": "^5.47",
