@@ -80,6 +80,369 @@ paths:
                       version: 1.0.0
                       timestamp: '2026-05-20T10:00:00.000Z'
 
+  # ──────────────────────────────────────────────────────────────────────────
+  # Auth (Sprint 1)
+  # ──────────────────────────────────────────────────────────────────────────
+  /api/v1/auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new account
+      operationId: authRegister
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              valid:
+                value:
+                  full_name: أحمد العلي
+                  email: ahmed@example.qa
+                  phone: '+97455123456'
+                  password: 'Str0ng!Pass'
+                  account_type: private
+                  language: ar
+                  accepted_terms: true
+      responses:
+        '201':
+          description: Account created. An OTP has been sent to the phone.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponseEnvelope'
+              examples:
+                created:
+                  value:
+                    success: true
+                    data:
+                      user:
+                        id: 01HM3XQVZP5KJWQR2K8N0DJSAW
+                        full_name: أحمد العلي
+                        email: ahmed@example.qa
+                        phone: '+97455123456'
+                        account_type: private
+                        status: active
+                        email_verified: false
+                        phone_verified: false
+                        language: ar
+                        avatar_url: null
+                        created_at: '2026-05-20T10:00:00.000Z'
+                      tokens:
+                        access_token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.signature
+                        refresh_token: rt_01HM3XR0J2YTYAQ4HZD8E7K9TC
+                        token_type: Bearer
+                        expires_in: 900
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /api/v1/auth/login:
+    post:
+      tags: [Auth]
+      summary: Sign in with email or phone + password
+      operationId: authLogin
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              byEmail:
+                value:
+                  identifier: ahmed@example.qa
+                  password: 'Str0ng!Pass'
+              byPhone:
+                value:
+                  identifier: '+97455123456'
+                  password: 'Str0ng!Pass'
+      responses:
+        '200':
+          description: Sign-in successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponseEnvelope'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                invalid:
+                  value:
+                    success: false
+                    error:
+                      code: AUTH_001
+                      message_key: errors.auth.invalid.credentials
+                      message: Invalid credentials
+                      details: null
+                      request_id: req_abc123
+        '403':
+          description: Account suspended
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /api/v1/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Revoke the current access token
+      operationId: authLogout
+      responses:
+        '204':
+          description: Logged out
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Exchange a refresh token for a new access + rotated refresh token
+      operationId: authRefresh
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+            examples:
+              valid:
+                value:
+                  refresh_token: rt_01HM3XR0J2YTYAQ4HZD8E7K9TC
+      responses:
+        '200':
+          description: New token pair issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponseEnvelope'
+        '401':
+          description: Refresh token expired or revoked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/auth/send-otp:
+    post:
+      tags: [Auth]
+      summary: Send a 6-digit OTP to the user's phone via Twilio
+      operationId: authSendOtp
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpSendRequest'
+            examples:
+              valid:
+                value:
+                  phone: '+97455123456'
+      responses:
+        '202':
+          description: OTP queued for delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpSendResponseEnvelope'
+              examples:
+                queued:
+                  value:
+                    success: true
+                    data:
+                      sent_to: '+97455123456'
+                      expires_in: 300
+                      can_resend_in: 60
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /api/v1/auth/verify-otp:
+    post:
+      tags: [Auth]
+      summary: Verify a 6-digit OTP and mark the phone as verified
+      operationId: authVerifyOtp
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpVerifyRequest'
+            examples:
+              valid:
+                value:
+                  phone: '+97455123456'
+                  code: '482915'
+      responses:
+        '200':
+          description: OTP accepted, phone now verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+              examples:
+                verified:
+                  value:
+                    success: true
+                    data:
+                      phone_verified: true
+        '410':
+          description: OTP expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+              examples:
+                expired:
+                  value:
+                    success: false
+                    error:
+                      code: AUTH_004
+                      message_key: errors.auth.otp.expired
+                      message: OTP has expired
+                      details: null
+                      request_id: req_abc123
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/auth/resend-otp:
+    post:
+      tags: [Auth]
+      summary: Resend the OTP after the cooldown window
+      operationId: authResendOtp
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpSendRequest'
+      responses:
+        '202':
+          description: New OTP queued for delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OtpSendResponseEnvelope'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /api/v1/auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Send a password-reset link to the user's email
+      operationId: authForgotPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+            examples:
+              valid:
+                value:
+                  email: ahmed@example.qa
+      responses:
+        '202':
+          description: If the email exists, a reset link has been sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+              examples:
+                queued:
+                  value:
+                    success: true
+                    data:
+                      message_key: messages.auth.reset_link_sent
+
+  /api/v1/auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Set a new password using the token from the reset email
+      operationId: authResetPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+            examples:
+              valid:
+                value:
+                  email: ahmed@example.qa
+                  token: 0f7e8d9c-...
+                  password: 'NewStr0ng!Pass'
+                  password_confirmation: 'NewStr0ng!Pass'
+      responses:
+        '200':
+          description: Password updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/auth/send-email-verification:
+    post:
+      tags: [Auth]
+      summary: Resend the email-verification link to the signed-in user
+      operationId: authSendEmailVerification
+      responses:
+        '202':
+          description: Verification link queued for delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/auth/verify-email/{id}/{hash}:
+    get:
+      tags: [Auth]
+      summary: Confirm the email address via the signed link from the verification mail
+      operationId: authVerifyEmail
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ULID'
+        - name: hash
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Email verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        '410':
+          description: Verification link expired or already consumed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
 components:
   schemas:
     # ─── Envelopes ──────────────────────────────────────────────────
@@ -184,7 +547,7 @@ components:
         en:
           type: string
 
-    # ─── Domain placeholders (filled per-sprint) ──────────────────
+    # ─── Domain ──────────────────────────────────────────────────────
     HealthResponse:
       allOf:
         - $ref: '#/components/schemas/SuccessEnvelope'
@@ -203,6 +566,191 @@ components:
                 timestamp:
                   type: string
                   format: date-time
+
+    # ── Auth (Sprint 1) ──────────────────────────────────────────────
+    User:
+      type: object
+      required: [id, full_name, email, phone, account_type, status, email_verified, phone_verified, language, created_at]
+      properties:
+        id:
+          $ref: '#/components/schemas/ULID'
+        full_name:
+          type: string
+          example: أحمد العلي
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          pattern: '^\+974[0-9]{8}$'
+          example: '+97455123456'
+        account_type:
+          type: string
+          enum: [private, business]
+        status:
+          type: string
+          enum: [active, suspended, deactivated, pending_deletion]
+        email_verified:
+          type: boolean
+        phone_verified:
+          type: boolean
+        language:
+          type: string
+          enum: [ar, en]
+        avatar_url:
+          type: [string, 'null']
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+
+    Token:
+      type: object
+      required: [access_token, refresh_token, token_type, expires_in]
+      properties:
+        access_token:
+          type: string
+          description: Sanctum personal access token, ~15-minute lifetime
+        refresh_token:
+          type: string
+          description: Opaque token used by POST /auth/refresh, ~30-day lifetime, rotated on every refresh
+        token_type:
+          type: string
+          enum: [Bearer]
+        expires_in:
+          type: integer
+          description: Seconds until access_token expires
+          example: 900
+
+    RegisterRequest:
+      type: object
+      required: [full_name, email, phone, password, account_type, accepted_terms]
+      properties:
+        full_name:
+          type: string
+          minLength: 3
+          maxLength: 80
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          pattern: '^\+974[0-9]{8}$'
+          example: '+97455123456'
+        password:
+          type: string
+          minLength: 8
+          description: Must contain uppercase, lowercase, number and symbol
+          example: 'Str0ng!Pass'
+        account_type:
+          type: string
+          enum: [private, business]
+        language:
+          type: string
+          enum: [ar, en]
+        accepted_terms:
+          type: boolean
+          enum: [true]
+
+    LoginRequest:
+      type: object
+      required: [identifier, password]
+      properties:
+        identifier:
+          type: string
+          description: Either email OR Qatar phone (+974XXXXXXXX)
+          example: ahmed@example.qa
+        password:
+          type: string
+          example: 'Str0ng!Pass'
+
+    RefreshRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token:
+          type: string
+
+    OtpSendRequest:
+      type: object
+      required: [phone]
+      properties:
+        phone:
+          type: string
+          pattern: '^\+974[0-9]{8}$'
+          example: '+97455123456'
+
+    OtpVerifyRequest:
+      type: object
+      required: [phone, code]
+      properties:
+        phone:
+          type: string
+          pattern: '^\+974[0-9]{8}$'
+          example: '+97455123456'
+        code:
+          type: string
+          pattern: '^[0-9]{6}$'
+          example: '482915'
+
+    ForgotPasswordRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+
+    ResetPasswordRequest:
+      type: object
+      required: [email, token, password, password_confirmation]
+      properties:
+        email:
+          type: string
+          format: email
+        token:
+          type: string
+        password:
+          type: string
+          minLength: 8
+        password_confirmation:
+          type: string
+          minLength: 8
+
+    AuthResponseEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              required: [user, tokens]
+              properties:
+                user:
+                  $ref: '#/components/schemas/User'
+                tokens:
+                  $ref: '#/components/schemas/Token'
+
+    OtpSendResponseEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              required: [sent_to, expires_in, can_resend_in]
+              properties:
+                sent_to:
+                  type: string
+                  description: Phone number the OTP was sent to (masked in production logs)
+                expires_in:
+                  type: integer
+                  description: Seconds until the OTP becomes invalid
+                  example: 300
+                can_resend_in:
+                  type: integer
+                  description: Seconds the client must wait before calling resend-otp
+                  example: 60
 
   responses:
     Unauthorized:
