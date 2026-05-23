@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +39,20 @@ Route::get('/health', function (): JsonResponse {
         'timestamp' => now()->toIso8601String(),
     ]);
 })->name('api.v1.health');
+
+// ────────────────────────────────────────────────────────────────────────────
+// OpenAPI raw spec — served from qbazaar-contracts/openapi/v1.yaml so the spec
+// stays the single source of truth. Used by Swagger UI (see web.php /swagger).
+// ────────────────────────────────────────────────────────────────────────────
+Route::get('/openapi.yaml', function (): Response {
+    $path = base_path('../qbazaar-contracts/openapi/v1.yaml');
+    abort_unless(is_file($path), 404, 'openapi/v1.yaml not found in qbazaar-contracts/');
+
+    return response((string) file_get_contents($path), 200, [
+        'Content-Type' => 'application/yaml; charset=utf-8',
+        'Cache-Control' => 'public, max-age=60',
+    ]);
+})->name('api.v1.openapi');
 
 // ────────────────────────────────────────────────────────────────────────────
 // Sprint endpoints land here, one Route group per domain.
