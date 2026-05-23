@@ -218,19 +218,19 @@
 - [x] Day 3: Local services (Redis/Meilisearch/MySQL) ✅ (2026-05-20)
 - [x] Day 4: Project structure (config, enums, middleware) ✅ (2026-05-20)
 - [x] Day 5: Tooling (Pint, PHPStan, Pest, Scribe, Sentry, CI) ✅ (2026-05-20)
-- [ ] Day 6: Next.js skeleton + Design system
-- [ ] Day 7: Prism mock + Workflow + Sprint 1 planning
+- [x] Day 6: Next.js skeleton + Design system ✅ (2026-05-20)
+- [x] Day 7: Prism mock + Workflow + Sprint 1 planning ✅ (2026-05-20)
 
 **DoD:** كل verification items من `PLAN.md` بنجاح.
 
 ---
 
-### Sprint 1 — Auth (~3 أيام)
+### Sprint 1 — Auth (~3 أيام) ✅
 
-- [ ] **Backend:** Register, Login, Logout, Refresh, OTP (send/verify/resend), Forgot/Reset password, Email verification, UserObserver
-- [ ] **Frontend:** Login/Register/OTP/Forgot pages, Auth store, axios interceptors, protected routes
-- [ ] **Contract:** Auth endpoints in openapi/v1.yaml كاملة
-- [ ] **Tests:** Pest > 70% للـ Auth module
+- [x] **Backend:** Register, Login, Logout, Refresh, OTP (send/verify/resend), Forgot/Reset password, Email verification, UserObserver — `e3c5349` + `40fe7a7` + `965ff11` + `df77ac3`
+- [x] **Frontend:** Login/Register/OTP/Forgot pages, Auth store, axios interceptors, protected routes
+- [x] **Contract:** Auth endpoints in openapi/v1.yaml كاملة
+- [x] **Tests:** Pest > 70% للـ Auth module
 
 ---
 
