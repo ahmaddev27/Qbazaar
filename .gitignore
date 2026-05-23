@@ -20,3 +20,7 @@ data.ms/
 
 # Reference docs that are kept around but not committed deeper than this snapshot
 # DOCS/ stays included — it's the architecture + mockup reference for the whole team
+
+# Local deploy artifacts (SSH keypair lives here; never committed)
+.deploy-keys/
+
