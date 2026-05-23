@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Exceptions\DomainException;
 use App\Exceptions\ErrorCode;
 use App\Http\Middleware\ApiResponseWrapper;
+use App\Http\Middleware\EnsurePhoneVerified;
+use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\LocaleMiddleware;
 use App\Http\Middleware\TrackClient;
 use Illuminate\Auth\AuthenticationException;
@@ -38,11 +40,15 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Aliases so route files can use 'locale', 'api.wrap', 'track.client'
+        // Aliases so route files can use 'locale', 'api.wrap', 'track.client'.
+        // `active.user` and `phone.verified` must be listed AFTER `auth:sanctum`
+        // in any route group — they assume $request->user() is already set.
         $middleware->alias([
             'locale' => LocaleMiddleware::class,
             'api.wrap' => ApiResponseWrapper::class,
             'track.client' => TrackClient::class,
+            'active.user' => EnsureUserIsActive::class,
+            'phone.verified' => EnsurePhoneVerified::class,
         ]);
 
         // API group — every /api/v1/* request runs through these in order
