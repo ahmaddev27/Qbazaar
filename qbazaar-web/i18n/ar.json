@@ -179,5 +179,171 @@
       "network": "تعذّر الاتصال بالخادم",
       "unknown": "حدث خطأ غير متوقع"
     }
+  },
+  "account": {
+    "nav": {
+      "title": "حسابي",
+      "dashboard": "اللوحة الرئيسية",
+      "profile": "الملف الشخصي",
+      "security": "الأمان",
+      "sessions": "الجلسات النشطة",
+      "verification": "التوثيق",
+      "privacy": "الخصوصية",
+      "blocked_users": "المستخدمون المحظورون",
+      "sign_out": "تسجيل الخروج",
+      "sign_out_confirm": "تم تسجيل الخروج"
+    },
+    "dashboard": {
+      "greeting": "أهلاً بعودتك، {name}",
+      "subtitle": "نظرة سريعة على نشاطك في QBazaar.",
+      "stats": {
+        "my_ads": "إعلاناتي",
+        "drafts": "المسودات",
+        "conversations": "المحادثات",
+        "unread_notifications": "إشعارات غير مقروءة"
+      },
+      "quick_actions": {
+        "title": "إجراءات سريعة",
+        "post_ad": "نشر إعلان",
+        "my_ads": "إعلاناتي",
+        "messages": "الرسائل",
+        "settings": "الإعدادات"
+      },
+      "recent_activity": {
+        "title": "نشاطك الأخير",
+        "coming_soon": "قريباً — سيظهر هنا سجل تفاعلاتك على QBazaar."
+      }
+    },
+    "profile": {
+      "title": "الملف الشخصي",
+      "subtitle": "حدّث المعلومات التي يراها الزوّار على ملفك العام.",
+      "full_name_label": "الاسم الكامل",
+      "full_name_placeholder": "سارة المنصوري",
+      "language_label": "لغة الواجهة",
+      "language_ar": "العربية",
+      "language_en": "English",
+      "bio_label": "نبذة تعريفية",
+      "bio_placeholder": "اكتب نبذة قصيرة عنك (اختياري).",
+      "bio_hint": "حد أقصى 280 حرفاً.",
+      "submit": "حفظ التغييرات",
+      "submitting": "جاري الحفظ…",
+      "success": "تم تحديث ملفك الشخصي"
+    },
+    "security": {
+      "title": "الأمان",
+      "subtitle": "غيّر كلمة المرور بانتظام لحماية حسابك.",
+      "current_password_label": "كلمة المرور الحالية",
+      "new_password_label": "كلمة المرور الجديدة",
+      "password_confirmation_label": "تأكيد كلمة المرور",
+      "submit": "تحديث كلمة المرور",
+      "submitting": "جاري التحديث…",
+      "success": "تم تحديث كلمة المرور",
+      "sign_out_notice": "سيتم تسجيل الخروج من جميع الأجهزة الأخرى بعد التحديث."
+    },
+    "sessions": {
+      "title": "الجلسات النشطة",
+      "subtitle": "الأجهزة التي سُجّل الدخول منها إلى حسابك حالياً.",
+      "current_badge": "الجهاز الحالي",
+      "last_used": "آخر استخدام {when}",
+      "ip_label": "IP",
+      "unknown_device": "جهاز غير معروف",
+      "revoke": "تسجيل الخروج",
+      "revoking": "جاري…",
+      "revoke_success": "تم إنهاء الجلسة",
+      "empty_title": "لا توجد جلسات نشطة",
+      "empty_body": "لم نعثر على جلسات أخرى لحسابك."
+    },
+    "verification": {
+      "title": "التوثيق",
+      "subtitle": "ارفع موثوقيتك على QBazaar بإكمال خطوات التوثيق.",
+      "channels": {
+        "email": "البريد الإلكتروني",
+        "phone": "رقم الهاتف",
+        "business": "حساب تجاري",
+        "kyc": "التحقق من الهوية"
+      },
+      "status": {
+        "verified": "موثّق",
+        "pending": "قيد الإعداد",
+        "not_verified": "غير موثّق"
+      },
+      "ctas": {
+        "send_email": "إرسال رابط تحقق البريد",
+        "sending_email": "جاري الإرسال…",
+        "verify_phone": "تحقق من الهاتف",
+        "business_soon": "قريباً",
+        "kyc_soon": "قريباً"
+      },
+      "email_sent": "تم إرسال رابط التحقق إلى بريدك",
+      "email_send_failed": "تعذّر إرسال الرابط، حاول لاحقاً"
+    },
+    "privacy": {
+      "title": "الخصوصية",
+      "subtitle": "تحكّم بما يراه الآخرون عنك على QBazaar.",
+      "fields": {
+        "show_phone_title": "إظهار رقم الهاتف",
+        "show_phone_desc": "السماح للزوار بمشاهدة رقم هاتفك على ملفك وإعلاناتك.",
+        "show_email_title": "إظهار البريد الإلكتروني",
+        "show_email_desc": "إظهار بريدك الإلكتروني للمستخدمين المسجّلين.",
+        "allow_chat_title": "السماح بالمحادثات",
+        "allow_chat_desc": "السماح للمشترين بمراسلتك مباشرة عبر QBazaar.",
+        "indexed_by_search_title": "إظهار ملفي في محركات البحث",
+        "indexed_by_search_desc": "السماح لمحركات البحث بفهرسة صفحتك العامة."
+      },
+      "save_success": "تم تحديث إعدادات الخصوصية",
+      "save_failed": "تعذّر تحديث الإعدادات، أعدنا الإعداد السابق"
+    },
+    "blocked_users": {
+      "title": "المستخدمون المحظورون",
+      "subtitle": "هؤلاء لا يستطيعون مراسلتك ولا رؤية إعلاناتك.",
+      "blocked_at": "تم الحظر {when}",
+      "unblock": "إلغاء الحظر",
+      "unblocking": "جاري…",
+      "unblock_success": "تم إلغاء الحظر",
+      "empty_title": "قائمتك فارغة",
+      "empty_body": "لم تحظر أي مستخدم بعد."
+    },
+    "errors": {
+      "bio_max": "النبذة طويلة (280 حرف كحد أقصى)",
+      "password_same_as_current": "اختر كلمة مرور مختلفة عن الحالية",
+      "USER_001": "المستخدم غير موجود",
+      "USER_002": "كلمة المرور الحالية غير صحيحة",
+      "USER_003": "هذا المستخدم محظور بالفعل",
+      "USER_004": "لا يمكنك حظر نفسك",
+      "USER_005": "لا تملك صلاحية لعرض هذه البيانات"
+    }
+  },
+  "users": {
+    "profile": {
+      "joined": "عضو منذ {date}",
+      "ads_count": "{count} إعلان نشط",
+      "account_type": {
+        "private": "حساب شخصي",
+        "business": "حساب تجاري"
+      },
+      "tabs": {
+        "ads": "الإعلانات",
+        "about": "نبذة"
+      },
+      "send_message": "أرسل رسالة",
+      "send_message_soon": "ميزة المراسلة قادمة قريباً",
+      "report": "الإبلاغ",
+      "report_soon": "ميزة الإبلاغ قادمة قريباً",
+      "no_bio": "لم يكتب هذا المستخدم نبذة بعد.",
+      "ads_empty_title": "لا توجد إعلانات",
+      "ads_empty_body": "ليس لدى {name} أي إعلانات نشطة حالياً.",
+      "not_found_title": "لم نعثر على هذا المستخدم",
+      "not_found_body": "ربما تم حذف الحساب أو الرابط غير صحيح."
+    },
+    "block": {
+      "button": "حظر",
+      "blocking": "جاري الحظر…",
+      "confirm_title": "حظر {name}؟",
+      "confirm_body": "لن يستطيع مراسلتك أو رؤية إعلاناتك. يمكنك إلغاء الحظر لاحقاً من إعدادات حسابك.",
+      "confirm": "تأكيد الحظر",
+      "cancel": "إلغاء",
+      "success": "تم حظر المستخدم",
+      "already_blocked": "هذا المستخدم محظور بالفعل"
+    }
   }
 }

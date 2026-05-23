@@ -140,3 +140,126 @@ export const AuthErrorCode = {
 
 export type AuthErrorCodeValue =
   (typeof AuthErrorCode)[keyof typeof AuthErrorCode];
+
+// ── Account / Users domain (Sprint 2) ──────────────────────────────────────
+// Shapes are aligned with the upcoming OpenAPI schemas — the backend agent
+// will land the contract update in this same wave.
+
+/**
+ * Counters surfaced on the authenticated account dashboard.
+ * Backend: `GET /account/summary`.
+ */
+export interface AccountSummary {
+  ads_count: number;
+  drafts_count: number;
+  conversations_count: number;
+  unread_notifications_count: number;
+}
+
+/**
+ * The full editable profile for the currently signed-in user.
+ * Backend: `GET /account/profile`.
+ */
+export interface AccountProfile extends User {
+  bio: string | null;
+}
+
+export interface UpdateProfileRequest {
+  full_name: string;
+  language: Language;
+  bio?: string | null;
+}
+
+export interface ChangePasswordRequest {
+  current_password: string;
+  new_password: string;
+  password_confirmation: string;
+}
+
+/**
+ * Privacy toggles persisted in a JSON column on `users`.
+ * Backend: `GET, PUT /account/privacy-settings`.
+ */
+export interface PrivacySettings {
+  show_phone: boolean;
+  show_email: boolean;
+  allow_chat: boolean;
+  indexed_by_search: boolean;
+}
+
+export interface VerificationStatus {
+  email_verified: boolean;
+  phone_verified: boolean;
+  business_verified: boolean;
+  kyc_verified: boolean;
+}
+
+/**
+ * One row in the active-sessions list.
+ * Backend: `GET /account/sessions`.
+ */
+export interface UserSession {
+  id: string;
+  device_label: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  last_used_at: string;
+  created_at: string;
+  is_current: boolean;
+}
+
+export interface BlockedUser {
+  id: string;
+  full_name: string;
+  avatar_url: string | null;
+  blocked_at: string;
+}
+
+export interface PublicUserProfile {
+  id: string;
+  full_name: string;
+  avatar_url: string | null;
+  account_type: AccountType;
+  email_verified: boolean;
+  phone_verified: boolean;
+  ads_count: number;
+  joined_at: string;
+  bio: string | null;
+}
+
+/**
+ * Minimal ad shape used by the public profile's "Ads" tab.
+ * The real Ad schema lands in Sprint 4 — this is intentionally narrow.
+ */
+export interface PublicUserAd {
+  id: string;
+  title: string;
+  price: number;
+  currency: string;
+  thumbnail_url: string | null;
+  created_at: string;
+}
+
+export interface PaginationMeta {
+  current_page: number;
+  per_page: number;
+  total: number;
+  last_page: number;
+}
+
+export interface PaginatedEnvelope<T> {
+  success: true;
+  data: T[];
+  meta: PaginationMeta;
+}
+
+export const UserErrorCode = {
+  UserNotFound: 'USER_001',
+  PasswordIncorrect: 'USER_002',
+  AlreadyBlocked: 'USER_003',
+  CannotBlockSelf: 'USER_004',
+  PrivacyDenied: 'USER_005',
+} as const;
+
+export type UserErrorCodeValue =
+  (typeof UserErrorCode)[keyof typeof UserErrorCode];

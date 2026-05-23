@@ -13,7 +13,19 @@ import ar from '@/i18n/ar.json';
 type Dict = Record<string, unknown>;
 const messages: Dict = ar as Dict;
 
-export function t(key: string, fallback?: string): string {
+export function t(
+  key: string,
+  varsOrFallback?: Record<string, string | number> | string,
+  maybeFallback?: string,
+): string {
+  // Support both `t(key)`, `t(key, fallback)`, and `t(key, vars)` / `t(key, vars, fallback)`.
+  const vars =
+    typeof varsOrFallback === 'object' && varsOrFallback !== null
+      ? varsOrFallback
+      : undefined;
+  const fallback =
+    typeof varsOrFallback === 'string' ? varsOrFallback : maybeFallback;
+
   const parts = key.split('.');
   let cur: unknown = messages;
   for (const part of parts) {
@@ -23,7 +35,11 @@ export function t(key: string, fallback?: string): string {
       return fallback ?? key;
     }
   }
-  return typeof cur === 'string' ? cur : (fallback ?? key);
+  const raw = typeof cur === 'string' ? cur : (fallback ?? key);
+  if (!vars) return raw;
+  return raw.replace(/\{(\w+)\}/g, (_, name: string) =>
+    name in vars ? String(vars[name]) : `{${name}}`,
+  );
 }
 
 /**

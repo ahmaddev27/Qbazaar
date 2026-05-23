@@ -179,5 +179,171 @@
       "network": "Could not reach the server",
       "unknown": "An unexpected error occurred"
     }
+  },
+  "account": {
+    "nav": {
+      "title": "Account",
+      "dashboard": "Dashboard",
+      "profile": "Profile",
+      "security": "Security",
+      "sessions": "Active sessions",
+      "verification": "Verification",
+      "privacy": "Privacy",
+      "blocked_users": "Blocked users",
+      "sign_out": "Sign out",
+      "sign_out_confirm": "Signed out"
+    },
+    "dashboard": {
+      "greeting": "Welcome back, {name}",
+      "subtitle": "A quick snapshot of your QBazaar activity.",
+      "stats": {
+        "my_ads": "My ads",
+        "drafts": "Drafts",
+        "conversations": "Conversations",
+        "unread_notifications": "Unread notifications"
+      },
+      "quick_actions": {
+        "title": "Quick actions",
+        "post_ad": "Post ad",
+        "my_ads": "My ads",
+        "messages": "Messages",
+        "settings": "Settings"
+      },
+      "recent_activity": {
+        "title": "Recent activity",
+        "coming_soon": "Coming soon — this is where your latest activity will appear."
+      }
+    },
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Update the information visitors see on your public profile.",
+      "full_name_label": "Full name",
+      "full_name_placeholder": "Sara Al-Mansoori",
+      "language_label": "Interface language",
+      "language_ar": "Arabic",
+      "language_en": "English",
+      "bio_label": "Short bio",
+      "bio_placeholder": "Tell other QBazaar members a bit about yourself (optional).",
+      "bio_hint": "Up to 280 characters.",
+      "submit": "Save changes",
+      "submitting": "Saving…",
+      "success": "Profile updated"
+    },
+    "security": {
+      "title": "Security",
+      "subtitle": "Change your password regularly to keep your account safe.",
+      "current_password_label": "Current password",
+      "new_password_label": "New password",
+      "password_confirmation_label": "Confirm new password",
+      "submit": "Update password",
+      "submitting": "Updating…",
+      "success": "Password updated",
+      "sign_out_notice": "This will sign you out from other devices."
+    },
+    "sessions": {
+      "title": "Active sessions",
+      "subtitle": "Devices currently signed in to your account.",
+      "current_badge": "This device",
+      "last_used": "Last used {when}",
+      "ip_label": "IP",
+      "unknown_device": "Unknown device",
+      "revoke": "Sign out",
+      "revoking": "Signing out…",
+      "revoke_success": "Session signed out",
+      "empty_title": "No other sessions",
+      "empty_body": "We couldn't find any other active sessions for your account."
+    },
+    "verification": {
+      "title": "Verification",
+      "subtitle": "Boost trust on QBazaar by completing the verification steps.",
+      "channels": {
+        "email": "Email address",
+        "phone": "Phone number",
+        "business": "Business account",
+        "kyc": "Identity (KYC)"
+      },
+      "status": {
+        "verified": "Verified",
+        "pending": "Pending",
+        "not_verified": "Not verified"
+      },
+      "ctas": {
+        "send_email": "Send verification email",
+        "sending_email": "Sending…",
+        "verify_phone": "Verify phone",
+        "business_soon": "Coming soon",
+        "kyc_soon": "Coming soon"
+      },
+      "email_sent": "Verification link sent to your email",
+      "email_send_failed": "We couldn't send the link, try again later"
+    },
+    "privacy": {
+      "title": "Privacy",
+      "subtitle": "Control what other QBazaar members can see about you.",
+      "fields": {
+        "show_phone_title": "Show phone number",
+        "show_phone_desc": "Let visitors see your phone number on your profile and ads.",
+        "show_email_title": "Show email",
+        "show_email_desc": "Show your email address to signed-in members.",
+        "allow_chat_title": "Allow chat",
+        "allow_chat_desc": "Let buyers message you directly through QBazaar.",
+        "indexed_by_search_title": "Indexed by search engines",
+        "indexed_by_search_desc": "Allow search engines to index your public profile."
+      },
+      "save_success": "Privacy settings updated",
+      "save_failed": "Couldn't save settings — we restored the previous value"
+    },
+    "blocked_users": {
+      "title": "Blocked users",
+      "subtitle": "These members can't message you or see your ads.",
+      "blocked_at": "Blocked {when}",
+      "unblock": "Unblock",
+      "unblocking": "Unblocking…",
+      "unblock_success": "User unblocked",
+      "empty_title": "Your list is empty",
+      "empty_body": "You haven't blocked anyone yet."
+    },
+    "errors": {
+      "bio_max": "Bio is too long (max 280 characters)",
+      "password_same_as_current": "Choose a password different from your current one",
+      "USER_001": "User not found",
+      "USER_002": "The current password is incorrect",
+      "USER_003": "This user is already blocked",
+      "USER_004": "You can't block yourself",
+      "USER_005": "You don't have permission to view this"
+    }
+  },
+  "users": {
+    "profile": {
+      "joined": "Member since {date}",
+      "ads_count": "{count} active ads",
+      "account_type": {
+        "private": "Private account",
+        "business": "Business account"
+      },
+      "tabs": {
+        "ads": "Ads",
+        "about": "About"
+      },
+      "send_message": "Send message",
+      "send_message_soon": "Messaging is coming soon",
+      "report": "Report",
+      "report_soon": "Reporting is coming soon",
+      "no_bio": "This member hasn't written a bio yet.",
+      "ads_empty_title": "No active ads",
+      "ads_empty_body": "{name} doesn't have any active ads right now.",
+      "not_found_title": "User not found",
+      "not_found_body": "The account may have been removed or the link is invalid."
+    },
+    "block": {
+      "button": "Block",
+      "blocking": "Blocking…",
+      "confirm_title": "Block {name}?",
+      "confirm_body": "They won't be able to message you or see your ads. You can unblock them later from your account settings.",
+      "confirm": "Block",
+      "cancel": "Cancel",
+      "success": "User blocked",
+      "already_blocked": "This user is already blocked"
+    }
   }
 }
