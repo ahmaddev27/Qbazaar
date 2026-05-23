@@ -14,6 +14,13 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+        // Reference data (Sprint 3) — public taxonomy + Qatar locations.
+        // Seeded first so factories in later seeders/tests can reference categories.
+        $this->call([
+            CategorySeeder::class,
+            LocationSeeder::class,
+        ]);
+
         User::factory()->create([
             'full_name' => 'Test User',
             'email' => 'test@example.com',

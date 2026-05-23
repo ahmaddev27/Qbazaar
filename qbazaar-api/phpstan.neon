@@ -25,6 +25,8 @@ parameters:
     - tests/Feature/Account/*
     - tests/Feature/Users/*
     - tests/Feature/Uploads/*
+    - tests/Feature/Categories/*
+    - tests/Feature/Locations/*
     - bootstrap/cache/*
     - storage/*
     - vendor/*

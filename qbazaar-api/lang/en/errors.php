@@ -61,6 +61,18 @@ return [
 
     'forbidden' => 'You are not authorised to perform this action.',
 
+    'category' => [
+        'not' => [
+            'found' => 'Category not found.',
+        ],
+    ],
+
+    'location' => [
+        'not' => [
+            'found' => 'Location not found.',
+        ],
+    ],
+
     'user' => [
         'not' => [
             'found' => 'User not found.',

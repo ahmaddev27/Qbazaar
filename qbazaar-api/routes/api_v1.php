@@ -19,6 +19,8 @@ use App\Http\Controllers\Api\V1\Auth\OtpController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetController;
 use App\Http\Controllers\Api\V1\Auth\RefreshTokenController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
+use App\Http\Controllers\Api\V1\Reference\CategoryController;
+use App\Http\Controllers\Api\V1\Reference\LocationController;
 use App\Http\Controllers\Api\V1\Uploads\AvatarUploadController;
 use App\Http\Controllers\Api\V1\Users\BlockController;
 use App\Http\Controllers\Api\V1\Users\PublicProfileController;
@@ -185,6 +187,27 @@ Route::prefix('uploads')
     ->middleware(['auth:sanctum', 'active.user', 'throttle:api'])
     ->group(function (): void {
         Route::post('/avatar', AvatarUploadController::class)->name('avatar');
+    });
+
+// ── Sprint 3 — Categories & Locations ───────────────────────────────────────
+//   Public reference data — browse taxonomy + Qatar location tree. No auth.
+//   All endpoints are cached at the controller level (see Reference\*).
+Route::prefix('categories')
+    ->name('api.v1.categories.')
+    ->middleware('throttle:api')
+    ->group(function (): void {
+        Route::get('tree', [CategoryController::class, 'tree'])->name('tree');
+        Route::get('main', [CategoryController::class, 'main'])->name('main');
+        Route::get('{slug}/stats', [CategoryController::class, 'stats'])->name('stats');
+        Route::get('{slug}/filters', [CategoryController::class, 'filters'])->name('filters');
+        Route::get('{slug}/fields', [CategoryController::class, 'fields'])->name('fields');
+    });
+
+Route::prefix('locations')
+    ->name('api.v1.locations.')
+    ->middleware('throttle:api')
+    ->group(function (): void {
+        Route::get('qatar', [LocationController::class, 'qatar'])->name('qatar');
     });
 
 Route::prefix('users')
