@@ -41,7 +41,9 @@
       "submitting": "Signing you in…",
       "no_account": "Don't have an account?",
       "go_to_register": "Create one",
-      "success": "Signed in"
+      "success": "Signed in",
+      "deactivated_notice": "Your account is deactivated. Sign in to reactivate it.",
+      "deleted_notice": "Your account is scheduled for deletion. Sign in within 30 days to cancel."
     },
     "register": {
       "title": "Create your account",
@@ -189,6 +191,7 @@
       "sessions": "Active sessions",
       "verification": "Verification",
       "privacy": "Privacy",
+      "data": "Data & account",
       "blocked_users": "Blocked users",
       "sign_out": "Sign out",
       "sign_out_confirm": "Signed out"
@@ -303,14 +306,82 @@
       "empty_title": "Your list is empty",
       "empty_body": "You haven't blocked anyone yet."
     },
+    "data": {
+      "title": "Data & account",
+      "subtitle": "Export your data or close your account.",
+      "export": {
+        "title": "Export my data",
+        "body": "Download a copy of your QBazaar data — profile, ads, messages, and activity history. We'll prepare the archive and email you a secure download link.",
+        "submit": "Request export",
+        "submitting": "Queuing your export…",
+        "queued_title": "Your export is being prepared",
+        "queued_body": "We emailed you a download link — check your inbox in a few minutes. You can come back to this page later to request a fresh copy.",
+        "request_again": "Request another export"
+      },
+      "deactivate": {
+        "title": "Deactivate my account",
+        "body": "Your profile, ads, and messages will be hidden from other members. Sign back in any time to restore them — nothing is deleted.",
+        "submit": "Deactivate account",
+        "dialog_title": "Deactivate your account?",
+        "dialog_body": "Confirm your password to deactivate. You can reactivate at any time by signing in again.",
+        "password_label": "Password",
+        "reason_label": "Reason (optional)",
+        "reason_placeholder": "Tell us why you're leaving (optional, up to 280 characters).",
+        "confirm": "Yes, deactivate",
+        "confirming": "Deactivating…",
+        "cancel": "Cancel"
+      },
+      "delete": {
+        "title": "Delete my account",
+        "body": "Schedules your account for permanent deletion in 30 days. After that we erase your profile, ads, and messages. Sign in again within the window to cancel.",
+        "submit": "Delete account",
+        "dialog_title": "Delete your account?",
+        "dialog_body": "Your account will be scheduled for deletion in 30 days. Sign in again within that window to cancel.",
+        "password_label": "Password",
+        "reason_label": "Reason (optional)",
+        "reason_placeholder": "Tell us why you're leaving (optional, up to 280 characters).",
+        "confirm": "Yes, delete",
+        "confirming": "Scheduling deletion…",
+        "cancel": "Cancel",
+        "scheduled_toast": "Account scheduled for deletion in 30 days. Sign in again to cancel."
+      }
+    },
+    "avatar": {
+      "title": "Profile photo",
+      "subtitle": "A clear photo helps buyers trust you. Square images work best.",
+      "drop_label": "Drop a photo here or",
+      "browse": "browse files",
+      "supported": "JPG, PNG, or WEBP. Up to 5 MB.",
+      "change": "Change photo",
+      "remove": "Remove",
+      "crop_title": "Crop your photo",
+      "crop_subtitle": "Drag to reposition. Use the slider to zoom.",
+      "crop_zoom_label": "Zoom",
+      "crop_confirm": "Use this photo",
+      "crop_cancel": "Cancel",
+      "uploading": "Uploading…",
+      "uploaded": "Profile photo updated",
+      "upload_failed": "Couldn't upload your photo, please try again",
+      "errors": {
+        "type": "Use a JPG, PNG, or WEBP file",
+        "size": "The image is too large (max 5 MB)",
+        "read": "We couldn't read that image — please pick another"
+      }
+    },
     "errors": {
       "bio_max": "Bio is too long (max 280 characters)",
       "password_same_as_current": "Choose a password different from your current one",
+      "reason_max": "Reason is too long (max 280 characters)",
       "USER_001": "User not found",
       "USER_002": "The current password is incorrect",
       "USER_003": "This user is already blocked",
       "USER_004": "You can't block yourself",
-      "USER_005": "You don't have permission to view this"
+      "USER_005": "You don't have permission to view this",
+      "USER_006": "Please confirm your password to deactivate",
+      "USER_007": "Please confirm your password to delete your account",
+      "USER_008": "An export is already being prepared — check your email",
+      "USER_009": "That file doesn't look like a supported image",
+      "USER_010": "The image is too large (max 5 MB)"
     }
   },
   "users": {

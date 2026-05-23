@@ -78,3 +78,23 @@ export const privacySettingsSchema = z.object({
 });
 
 export type PrivacySettingsInput = z.infer<typeof privacySettingsSchema>;
+
+// ── Account lifecycle (deactivate / delete) ────────────────────────────────
+// Both flows require the current password (so a stolen session can't kill an
+// account) and accept an optional free-text reason for product analytics.
+const accountLifecycleShape = {
+  password: z.string().min(1, 'auth.errors.password_required'),
+  reason: z
+    .string()
+    .trim()
+    .max(280, 'account.errors.reason_max')
+    .transform((value) => (value.length === 0 ? null : value))
+    .nullable()
+    .optional(),
+};
+
+export const deactivateSchema = z.object(accountLifecycleShape);
+export type DeactivateInput = z.infer<typeof deactivateSchema>;
+
+export const deleteAccountSchema = z.object(accountLifecycleShape);
+export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;

@@ -8,6 +8,12 @@
 import { create } from 'zustand';
 import type { User } from '@/lib/api/types';
 
+export interface AvatarUrls {
+  avatar_url: string | null;
+  avatar_thumb_url?: string | null;
+  avatar_medium_url?: string | null;
+}
+
 export interface AuthState {
   user: User | null;
   accessToken: string | null;
@@ -18,6 +24,11 @@ export interface AuthState {
   setAuth: (params: { user: User; accessToken: string }) => void;
   setAccessToken: (accessToken: string | null) => void;
   setUser: (user: User | null) => void;
+  /**
+   * Patch only the avatar fields on the cached user. No-op when the user
+   * has not been hydrated yet (avoids spawning a phantom user record).
+   */
+  setAvatarUrls: (urls: AvatarUrls) => void;
   setLoading: (isLoading: boolean) => void;
   setHydrated: (isHydrated: boolean) => void;
   clearAuth: () => void;
@@ -31,6 +42,19 @@ export const useAuthStore = create<AuthState>((set) => ({
   setAuth: ({ user, accessToken }) => set({ user, accessToken }),
   setAccessToken: (accessToken) => set({ accessToken }),
   setUser: (user) => set({ user }),
+  setAvatarUrls: (urls) =>
+    set((state) =>
+      state.user
+        ? {
+            user: {
+              ...state.user,
+              avatar_url: urls.avatar_url,
+              avatar_thumb_url: urls.avatar_thumb_url ?? null,
+              avatar_medium_url: urls.avatar_medium_url ?? null,
+            },
+          }
+        : state,
+    ),
   setLoading: (isLoading) => set({ isLoading }),
   setHydrated: (isHydrated) => set({ isHydrated }),
   clearAuth: () =>

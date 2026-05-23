@@ -28,6 +28,8 @@ export interface User {
   phone_verified: boolean;
   language: Language;
   avatar_url: string | null;
+  avatar_thumb_url?: string | null;
+  avatar_medium_url?: string | null;
   created_at: string;
 }
 
@@ -259,7 +261,49 @@ export const UserErrorCode = {
   AlreadyBlocked: 'USER_003',
   CannotBlockSelf: 'USER_004',
   PrivacyDenied: 'USER_005',
+  // Wave 2 — account-lifecycle codes
+  DeactivationPasswordRequired: 'USER_006',
+  DeletionPasswordRequired: 'USER_007',
+  DataExportPending: 'USER_008',
+  AvatarInvalidImage: 'USER_009',
+  AvatarTooLarge: 'USER_010',
 } as const;
 
 export type UserErrorCodeValue =
   (typeof UserErrorCode)[keyof typeof UserErrorCode];
+
+// ── Account lifecycle / Avatar (Sprint 2 Wave 2) ───────────────────────────
+
+/**
+ * Response from `POST /account/data-export-request`.
+ * The actual export file is delivered out-of-band via email — the API only
+ * confirms the job has been queued.
+ */
+export interface DataExportResponse {
+  status: 'queued' | 'processing' | 'ready';
+  requested_at: string;
+  estimated_ready_in_minutes?: number | null;
+}
+
+export interface DeactivateAccountRequest {
+  password: string;
+  reason?: string | null;
+}
+
+export interface DeleteAccountRequest {
+  password: string;
+  reason?: string | null;
+}
+
+/**
+ * Response from `POST /uploads/avatar`. The backend returns three URLs:
+ *
+ * - `avatar_url`        full-resolution image (cropped 1:1 by the client)
+ * - `avatar_thumb_url`  ~64px thumbnail used in lists + sidebar
+ * - `avatar_medium_url` ~256px medium used on profile cards
+ */
+export interface AvatarUploadResponse {
+  avatar_url: string;
+  avatar_thumb_url: string;
+  avatar_medium_url: string;
+}

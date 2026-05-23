@@ -17,6 +17,9 @@ import type {
   AccountSummary,
   BlockedUser,
   ChangePasswordRequest,
+  DataExportResponse,
+  DeactivateAccountRequest,
+  DeleteAccountRequest,
   ErrorEnvelope,
   PrivacySettings,
   SuccessEnvelope,
@@ -167,6 +170,52 @@ export async function getVerificationStatus(): Promise<VerificationStatus> {
       '/api/v1/account/verification-status',
     );
     return data.data;
+  } catch (err) {
+    throw toApiClientError(err);
+  }
+}
+
+// ── Data export / deactivate / delete (Wave 2 lifecycle) ───────────────────
+
+/**
+ * Queue a "give me all my data" job server-side. The link arrives by email
+ * — the response only confirms the request was accepted.
+ */
+export async function requestDataExport(): Promise<DataExportResponse> {
+  try {
+    const { data } = await api.post<SuccessEnvelope<DataExportResponse>>(
+      '/api/v1/account/data-export-request',
+    );
+    return data.data;
+  } catch (err) {
+    throw toApiClientError(err);
+  }
+}
+
+/**
+ * Deactivate the current account. The user must re-enter their password.
+ * After success the caller is expected to clear the local auth state and
+ * redirect to `/login?deactivated=1`.
+ */
+export async function deactivateAccount(
+  payload: DeactivateAccountRequest,
+): Promise<void> {
+  try {
+    await api.post('/api/v1/account/deactivate', payload);
+  } catch (err) {
+    throw toApiClientError(err);
+  }
+}
+
+/**
+ * Schedule the account for deletion (typically with a 30-day grace window
+ * managed server-side). Caller signs out + redirects to `/login?deleted=1`.
+ */
+export async function requestAccountDeletion(
+  payload: DeleteAccountRequest,
+): Promise<void> {
+  try {
+    await api.delete('/api/v1/account/delete-request', { data: payload });
   } catch (err) {
     throw toApiClientError(err);
   }

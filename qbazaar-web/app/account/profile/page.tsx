@@ -7,14 +7,16 @@
  * `ProfileForm` component which owns RHF + Zod validation and the
  * `PUT /account/profile` mutation.
  */
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2Icon } from 'lucide-react';
 
 import { t } from '@/lib/i18n/messages';
 import { getAccountProfile } from '@/lib/api/account';
 import { ProfileForm } from '@/components/account/ProfileForm';
+import { AvatarUploader } from '@/components/account/AvatarUploader';
 
 export default function AccountProfilePage() {
+  const queryClient = useQueryClient();
   const {
     data: profile,
     isLoading,
@@ -34,6 +36,14 @@ export default function AccountProfilePage() {
           {t('account.profile.subtitle')}
         </p>
       </header>
+
+      <AvatarUploader
+        fullName={profile?.full_name ?? ''}
+        onUploaded={() => {
+          // Keep the cached profile in sync so the form sees the latest URLs.
+          queryClient.invalidateQueries({ queryKey: ['account', 'profile'] });
+        }}
+      />
 
       <div className="bg-card ring-foreground/10 rounded-2xl p-5 sm:p-7 ring-1">
         {isLoading || !profile ? (

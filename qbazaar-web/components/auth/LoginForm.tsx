@@ -51,8 +51,27 @@ export function LoginForm() {
   const passwordError = form.formState.errors.password?.message;
   const submitting = form.formState.isSubmitting;
 
+  // Sticky lifecycle banner — set when the user just deactivated or deleted
+  // their account on `/account/data` and we bounced them here.
+  const lifecycleNotice =
+    search.get('deactivated') === '1'
+      ? t('auth.login.deactivated_notice')
+      : search.get('deleted') === '1'
+        ? t('auth.login.deleted_notice')
+        : null;
+
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
+      {lifecycleNotice ? (
+        <p
+          role="status"
+          aria-live="polite"
+          className="border-coral/30 bg-coral/5 text-ink-700 rounded-xl border px-4 py-3 text-sm"
+        >
+          {lifecycleNotice}
+        </p>
+      ) : null}
+
       <div className="space-y-1.5">
         <Label htmlFor="identifier">{t('auth.login.identifier_label')}</Label>
         <Input
