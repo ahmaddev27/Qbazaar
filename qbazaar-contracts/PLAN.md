@@ -654,8 +654,8 @@ npm install -D @types/node
 ## Milestones
 
 ### ✅ Milestone 1: Backend Foundation
-- [x] Sprint 0 — Infrastructure (2026-05-20 — 2026-05-26)
-- [ ] Sprint 1 — Auth (2026-05-27 — 2026-05-29)
+- [x] Sprint 0 — Infrastructure (✅ 2026-05-20)
+- [ ] Sprint 1 — Auth
 - [ ] Sprint 2 — Users
 - [ ] Sprint 3 — Categories & Locations
 
@@ -663,7 +663,7 @@ npm install -D @types/node
 ...
 
 ## Sprint Retros
-### Sprint 0 (2026-05-20 — 2026-05-26)
+### Sprint 0 (✅ 2026-05-20)
 - ✅ كل الـ tasks تمت
 - 🟡 ملاحظة: Memurai احتاج تثبيت يدوي
 - 🔴 لا يوجد blockers

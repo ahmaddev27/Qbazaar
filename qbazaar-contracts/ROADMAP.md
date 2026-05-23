@@ -1,9 +1,9 @@
 # QBazaar — Roadmap (Solo Dev MVP)
 
-> **آخر تحديث:** 2026-05-20 (نهاية Day 1)
+> **آخر تحديث:** 2026-05-20
 > **تاريخ البدء:** 2026-05-20
-> **التاريخ المتوقع للإطلاق:** 2026-08-26 (~14 أسبوع)
 > **النطاق:** Backend (Laravel) + Web (Next.js). بدون Mobile/Phase 2.
+> **ملاحظة:** لا نلتزم بتواريخ انتهاء متوقعة — نمشي per-sprint وفق ما يجهز.
 
 ---
 
@@ -191,15 +191,15 @@
 
 ## 📊 ملخص المايلستونس
 
-| # | Milestone | المدة | البدء | الانتهاء المتوقع | الحالة |
-|---|-----------|-------|-------|------------------|--------|
-| 1 | Backend Foundation | 2 أسبوع | 2026-05-20 | 2026-06-02 | 🟡 جاري |
-| 2 | Marketplace Core | 3 أسابيع | 2026-06-03 | 2026-06-23 | ⚪ منتظر |
-| 3 | Engagement | 3 أسابيع | 2026-06-24 | 2026-07-14 | ⚪ منتظر |
-| 4 | Trust & Admin | 2 أسبوع | 2026-07-15 | 2026-07-28 | ⚪ منتظر |
-| 5 | Content & Polish | 1 أسبوع | 2026-07-29 | 2026-08-04 | ⚪ منتظر |
-| 6 | Web Frontend (parallel) | — | 2026-06-03 | 2026-08-11 | ⚪ منتظر |
-| 7 | Launch Prep | 1 أسبوع | 2026-08-12 | 2026-08-26 | ⚪ منتظر |
+| # | Milestone | الحجم المُقدَّر | الحالة |
+|---|-----------|------------------|--------|
+| 1 | Backend Foundation | 2 أسبوع | 🟡 جاري |
+| 2 | Marketplace Core | 3 أسابيع | ⚪ منتظر |
+| 3 | Engagement | 3 أسابيع | ⚪ منتظر |
+| 4 | Trust & Admin | 2 أسبوع | ⚪ منتظر |
+| 5 | Content & Polish | 1 أسبوع | ⚪ منتظر |
+| 6 | Web Frontend (parallel) | — | ⚪ منتظر |
+| 7 | Launch Prep | 1 أسبوع | ⚪ منتظر |
 
 **Legend:** ✅ مكتمل · 🟢 جاهز للإغلاق · 🟡 جاري · ⚪ منتظر · 🔴 blocked
 
@@ -209,7 +209,7 @@
 
 > الأساس قبل أي feature. كل ما بعدها يعتمد عليها.
 
-### Sprint 0 — Infrastructure & Foundation (1 أسبوع · 2026-05-20 → 2026-05-26)
+### Sprint 0 — Infrastructure & Foundation (~1 أسبوع — ✅ تم في 2026-05-20)
 
 7 أيام، 3 tracks متوازية. **راجع `MILESTONES.md` للتاسكات التفصيلية.**
 
@@ -225,7 +225,7 @@
 
 ---
 
-### Sprint 1 — Auth (3 أيام · 2026-05-27 → 2026-05-29)
+### Sprint 1 — Auth (~3 أيام)
 
 - [ ] **Backend:** Register, Login, Logout, Refresh, OTP (send/verify/resend), Forgot/Reset password, Email verification, UserObserver
 - [ ] **Frontend:** Login/Register/OTP/Forgot pages, Auth store, axios interceptors, protected routes
@@ -234,7 +234,7 @@
 
 ---
 
-### Sprint 2 — Users (3 أيام · 2026-05-30 → 2026-06-01)
+### Sprint 2 — Users (3 أيام)
 
 - [ ] **Backend:** Profile CRUD, Public profile, Sessions, Privacy settings, Block/Unblock, Avatar upload, Account deactivation
 - [ ] **Frontend:** Account dashboard, Profile edit, Settings page, Privacy controls, Blocked users list
@@ -242,7 +242,7 @@
 
 ---
 
-### Sprint 3 — Categories & Locations (2 أيام · 2026-06-02)
+### Sprint 3 — Categories & Locations (2 أيام)
 
 - [ ] **Backend:** Category tree (cached), filters, custom fields per category. Qatar locations seeder
 - [ ] **Frontend:** Category browser, Location picker
@@ -255,7 +255,7 @@
 
 > القلب — الإعلانات والبحث. أهم Milestone في الـ MVP.
 
-### Sprint 4 — Uploads (2 أيام · 2026-06-03 → 2026-06-04)
+### Sprint 4 — Uploads (2 أيام)
 
 - [ ] **Backend:** Spatie MediaLibrary setup, multi-size conversions (thumbnail/medium/large/original-webp), Cloudflare R2 connection, BlurHash, pHash for dedup
 - [ ] **Frontend:** Image picker + uploader, multi-file, progress, drag-reorder, BlurHash placeholder
@@ -263,7 +263,7 @@
 
 ---
 
-### Sprint 5 — Ads (أسبوعين · 2026-06-05 → 2026-06-18)
+### Sprint 5 — Ads (أسبوعين)
 
 - [ ] **Backend:**
   - Ad CRUD (draft + publish)
@@ -285,7 +285,7 @@
 
 ---
 
-### Sprint 6 — Search (3 أيام · 2026-06-19 → 2026-06-21)
+### Sprint 6 — Search (3 أيام)
 
 - [ ] **Backend:**
   - Laravel Scout + Meilisearch setup
@@ -308,7 +308,7 @@
 
 > ما يحول المستخدم من زائر لمستخدم نشط.
 
-### Sprint 7 — Favorites & Recently Viewed (1 يوم · 2026-06-24)
+### Sprint 7 — Favorites & Recently Viewed (1 يوم)
 
 - [ ] **Backend:** Favorites CRUD, Recently viewed (cap 50/user), cleanup job
 - [ ] **Frontend:** Saved page (saved.jsx), Favorite toggle on cards, Recently viewed strip
@@ -316,7 +316,7 @@
 
 ---
 
-### Sprint 8 — Messaging via Reverb (أسبوعين · 2026-06-25 → 2026-07-08)
+### Sprint 8 — Messaging via Reverb (أسبوعين)
 
 - [ ] **Backend:**
   - Reverb setup (config + supervisor instructions)
@@ -337,7 +337,7 @@
 
 ---
 
-### Sprint 9 — Offers (1 يوم · 2026-07-09)
+### Sprint 9 — Offers (1 يوم)
 
 - [ ] **Backend:** Offer CRUD, Accept/Reject/Counter actions, Offer expiry (7 days), Notification triggers
 - [ ] **Frontend:** Make offer modal on ad page, Offers list in chat
@@ -349,7 +349,7 @@
 
 > الموثوقية + الإدارة.
 
-### Sprint 10 — Reports & Notifications (1 أسبوع · 2026-07-10 → 2026-07-16)
+### Sprint 10 — Reports & Notifications (1 أسبوع)
 
 - [ ] **Backend:**
   - Reports CRUD (Ad/User/Conversation)
@@ -367,7 +367,7 @@
 
 ---
 
-### Sprint 11 — Filament Admin Panel (1 أسبوع · 2026-07-17 → 2026-07-23)
+### Sprint 11 — Filament Admin Panel (1 أسبوع)
 
 - [ ] **Resources (16):** User, Ad, Report, Category, Location, BusinessApplication, SupportTicket, ModerationRule, CmsPage, HelpArticle, NotificationTemplate, AdminUser, + 4 more
 - [ ] **Pages:** Dashboard with widgets, SystemSettings, AuditLogsPage
@@ -379,14 +379,14 @@
 
 ## 📚 Milestone 5 — Content & Polish (أسبوع)
 
-### Sprint 12 — CMS, Help, Support (2 أيام · 2026-07-24 → 2026-07-25)
+### Sprint 12 — CMS, Help, Support (2 أيام)
 
 - [ ] **Backend:** CMS Pages (about, terms, privacy, safety), Help articles, Support tickets
 - [ ] **Frontend:** CMS pages, Help center (help.jsx), Support contact form
 - [ ] **Contract:** CMS endpoints
 - [ ] **Filament:** CMS + Help + Support resources
 
-### QA + Buffer (3 أيام · 2026-07-26 → 2026-07-28)
+### QA + Buffer (3 أيام)
 
 - [ ] Bug bash session
 - [ ] Performance audit (Lighthouse + Laravel Pulse)
@@ -409,7 +409,7 @@
 
 ---
 
-## 🚀 Milestone 7 — Launch Prep (أسبوع · 2026-08-12 → 2026-08-26)
+## 🚀 Milestone 7 — Launch Prep (أسبوع)
 
 - [ ] Production environment setup (Forge / Cloud / DO)
 - [ ] qbazaar.qa domain + SSL

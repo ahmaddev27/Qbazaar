@@ -115,7 +115,6 @@
 
 ## Sprint 0 — Infrastructure & Foundation (1 أسبوع)
 
-**التاريخ:** 2026-05-20 → 2026-05-26
 **Goal:** بيئة جاهزة قبل أي feature. كل verification items في `PLAN.md` تمر.
 **ملاحظة:** Sprint 0 ما فيه user stories بالمعنى التقليدي — كله infrastructure.
 
@@ -194,7 +193,6 @@
 
 ## Sprint 1 — Auth (3 أيام)
 
-**التاريخ:** 2026-05-27 → 2026-05-29
 **Goal:** المستخدم يقدر يسجل، يدخل، يطلع، يستعيد كلمة المرور، ويتحقق من الهاتف.
 
 ### 📖 User Stories
@@ -295,7 +293,6 @@
 
 ## Sprint 2 — Users (3 أيام)
 
-**التاريخ:** 2026-05-30 → 2026-06-01
 **Goal:** المستخدم يقدر يدير حسابه، يحدث profile، يتحكم في الخصوصية، يحظر مستخدمين.
 
 ### 📖 User Stories
@@ -394,7 +391,6 @@
 
 ## Sprint 3 — Categories & Locations (2 أيام)
 
-**التاريخ:** 2026-06-02
 **Goal:** البيانات المرجعية (الأقسام + المناطق القطرية) جاهزة ومُخزّنة بـ cache.
 
 ### 📖 User Stories
@@ -468,7 +464,6 @@
 
 ## Sprint 4 — Uploads (2 أيام)
 
-**التاريخ:** 2026-06-03 → 2026-06-04
 **Goal:** نظام رفع الصور جاهز (multi-size conversions, BlurHash, pHash dedup).
 
 ### 📖 User Stories
@@ -532,7 +527,6 @@
 
 ## Sprint 5 — Ads (أسبوعين)
 
-**التاريخ:** 2026-06-05 → 2026-06-18
 **Goal:** أهم Sprint — نظام الإعلانات الكامل: draft → publish → moderation → live → renew/sold/expired.
 
 ### 📖 User Stories (17 stories)
@@ -658,7 +652,6 @@
 
 ## Sprint 6 — Search (3 أيام)
 
-**التاريخ:** 2026-06-19 → 2026-06-21
 **Goal:** Meilisearch مدمج، البحث سريع ودقيق (عربي + إنجليزي)، Saved Searches بـ alerts.
 
 ### 📖 User Stories
@@ -732,7 +725,6 @@
 
 ## Sprint 7 — Favorites & Recently Viewed (1 يوم)
 
-**التاريخ:** 2026-06-24
 **Goal:** المستخدم يحفظ إعلانات ويشوف اللي شافها مؤخراً.
 
 ### 📖 User Stories
@@ -779,7 +771,6 @@ CT-7.1: 5 endpoints, schemas: `Favorite`, `RecentlyViewed`
 
 ## Sprint 8 — Messaging via Reverb (أسبوعين)
 
-**التاريخ:** 2026-06-25 → 2026-07-08
 **Goal:** Real-time chat بين المشتري والبائع عبر Laravel Reverb. Content safety + Reports integrated.
 
 ### 📖 User Stories
@@ -868,7 +859,6 @@ CT-7.1: 5 endpoints, schemas: `Favorite`, `RecentlyViewed`
 
 ## Sprint 9 — Offers (1 يوم)
 
-**التاريخ:** 2026-07-09
 **Goal:** نظام عروض الأسعار داخل المحادثات.
 
 ### 📖 User Stories
@@ -925,7 +915,6 @@ CT-9.1: 5 endpoints, schemas: `Offer`, `MakeOfferRequest`, `CounterOfferRequest`
 
 ## Sprint 10 — Reports & Notifications (1 أسبوع)
 
-**التاريخ:** 2026-07-10 → 2026-07-16
 **Goal:** نظام البلاغات + multi-channel notifications (database, email, FCM push).
 
 ### 📖 User Stories
@@ -992,7 +981,6 @@ CT-10.1: 10+ endpoints, schemas: `Notification`, `NotificationPreferences`, `Rep
 
 ## Sprint 11 — Filament Admin Panel (1 أسبوع)
 
-**التاريخ:** 2026-07-17 → 2026-07-23
 **Goal:** Admin panel كامل لإدارة المنصة (16 resources + 3 pages + widgets).
 
 ### 📖 User Stories (admin-facing)
@@ -1066,7 +1054,6 @@ CT-10.1: 10+ endpoints, schemas: `Notification`, `NotificationPreferences`, `Rep
 
 ## Sprint 12 — CMS, Help & Support (2 أيام)
 
-**التاريخ:** 2026-07-24 → 2026-07-25
 **Goal:** صفحات الـ CMS الثابتة + مركز المساعدة + الدعم.
 
 ### 📖 User Stories
@@ -1121,7 +1108,6 @@ CT-12.1: 7 endpoints, schemas: `CmsPage`, `HelpArticle`, `SupportTicket`, `Suppo
 
 ## QA & Buffer (3 أيام)
 
-**التاريخ:** 2026-07-26 → 2026-07-28
 **Goal:** Bug bash + audits + polish قبل التحضير للإطلاق.
 
 ### Tasks
@@ -1169,7 +1155,6 @@ CT-12.1: 7 endpoints, schemas: `CmsPage`, `HelpArticle`, `SupportTicket`, `Suppo
 
 # Milestone 7 — Launch Prep (1 أسبوع)
 
-**التاريخ:** 2026-08-12 → 2026-08-26
 **Goal:** Production live على qbazaar.qa.
 
 ### Tasks
