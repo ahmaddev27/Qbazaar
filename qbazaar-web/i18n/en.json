@@ -12,7 +12,10 @@
     "delete": "Delete",
     "edit": "Edit",
     "submit": "Submit",
-    "or": "or"
+    "or": "or",
+    "min": "Min",
+    "max": "Max",
+    "filters": "Filters"
   },
   "auth": {
     "hero": {
@@ -415,6 +418,28 @@
       "cancel": "Cancel",
       "success": "User blocked",
       "already_blocked": "This user is already blocked"
+    }
+  },
+  "categories": {
+    "all": "Categories",
+    "index_subtitle": "Discover what your neighbours in Qatar are buying and selling",
+    "subcategories": "Subcategories",
+    "ads_coming_soon": "Ads coming soon",
+    "ads_coming_soon_subtitle": "We're building the listing page. Stay tuned — it's landing very soon.",
+    "no_subcategories": "No subcategories yet",
+    "no_filters": "No filters available",
+    "ads_count": "{count} ads",
+    "errors": {
+      "not_found": "We couldn't find this category"
+    }
+  },
+  "locations": {
+    "all": "All Qatar",
+    "pick": "Location",
+    "city": "City",
+    "district": "District",
+    "errors": {
+      "not_found": "Could not load locations"
     }
   }
 }

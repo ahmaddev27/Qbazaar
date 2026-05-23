@@ -307,3 +307,93 @@ export interface AvatarUploadResponse {
   avatar_thumb_url: string;
   avatar_medium_url: string;
 }
+
+// ── Reference data (Sprint 3) ──────────────────────────────────────────────
+// Categories + locations are read-only public data loaded once and cached
+// aggressively (the contract advertises 1h/24h cache headers). The shapes
+// below mirror `qbazaar-contracts/openapi/v1.yaml` for Sprint 3.
+
+/**
+ * Bilingual string used everywhere reference data needs both Arabic and
+ * English labels (categories, filters, fields, locations).
+ */
+export type LocalizedString = { ar: string; en: string };
+
+/**
+ * One row of `categories`. `custom_fields` and `custom_filters` are surfaced
+ * inline on the category detail/listing pages — they're nullable because the
+ * leaf-vs-parent distinction is enforced by the backend, not the schema.
+ */
+export interface Category {
+  id: string;
+  parent_id: string | null;
+  slug: string;
+  name: LocalizedString;
+  description: LocalizedString | null;
+  /** Lucide-react icon name, e.g. 'Car', 'Home', 'Smartphone'. */
+  icon: string | null;
+  order: number;
+  is_active: boolean;
+  custom_fields: CategoryField[] | null;
+  custom_filters: CategoryFilter[] | null;
+  /** Cached count surfaced by the API; zero until Sprint 5 ships ads. */
+  ads_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * A category plus its nested children — the shape returned by
+ * `GET /api/v1/categories/tree`. Used for the explorer + breadcrumb.
+ */
+export interface CategoryNode extends Category {
+  children: CategoryNode[];
+}
+
+export type CategoryFilterType = 'select' | 'range' | 'boolean';
+
+export interface CategoryFilter {
+  key: string;
+  label: LocalizedString;
+  type: CategoryFilterType;
+  options: string[] | null;
+}
+
+export type CategoryFieldType =
+  | 'text'
+  | 'number'
+  | 'select'
+  | 'boolean'
+  | 'date';
+
+export interface CategoryField {
+  key: string;
+  label: LocalizedString;
+  type: CategoryFieldType;
+  required: boolean;
+  options: string[] | null;
+}
+
+export interface CategoryStats {
+  ads_count: number;
+  sub_ads_count: number;
+}
+
+export type LocationType = 'city' | 'district' | 'area';
+
+/**
+ * One node in the Qatar location tree. Children are inlined so the whole
+ * tree fits in a single payload (it's small + extremely cacheable).
+ */
+export interface Location {
+  id: string;
+  parent_id: string | null;
+  slug: string;
+  name: LocalizedString;
+  type: LocationType;
+  lat: number | null;
+  lng: number | null;
+  children: Location[];
+}
+
+export type ReferenceErrorCode = 'CATEGORY_NOT_FOUND' | 'LOCATION_NOT_FOUND';
