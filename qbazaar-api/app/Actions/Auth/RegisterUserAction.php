@@ -8,6 +8,7 @@ use App\Enums\AccountType;
 use App\Enums\Language;
 use App\Enums\UserStatus;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use App\Services\Auth\RefreshTokenService;
 use App\Services\Auth\TokenPair;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,11 @@ use Illuminate\Support\Facades\DB;
  *
  * Wrapped in a DB transaction so a failure halfway through (e.g. token table
  * write) doesn't leave an orphaned half-created user.
+ *
+ * Side effects (post-commit):
+ *  - WelcomeNotification — fired after the transaction commits via the
+ *    notification's queue/mailer; even if it fails, the user row + tokens are
+ *    already durable, so register stays idempotent from the client's view.
  */
 class RegisterUserAction
 {
@@ -37,7 +43,8 @@ class RegisterUserAction
      */
     public function execute(array $data, ?string $deviceFingerprint = null): array
     {
-        return DB::transaction(function () use ($data, $deviceFingerprint) {
+        /** @var array{user: User, tokens: TokenPair} $result */
+        $result = DB::transaction(function () use ($data, $deviceFingerprint) {
             $user = User::query()->create([
                 'full_name' => $data['full_name'],
                 'email' => strtolower($data['email']),
@@ -54,5 +61,11 @@ class RegisterUserAction
 
             return ['user' => $user, 'tokens' => $tokens];
         });
+
+        // Dispatched outside the DB transaction so a flaky mail driver can't
+        // roll back the user creation.
+        $result['user']->notify(new WelcomeNotification);
+
+        return $result;
     }
 }

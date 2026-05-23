@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Notification;
 
 use function Pest\Laravel\postJson;
 
@@ -12,6 +13,9 @@ uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     Cache::flush();
+    // RegisterUserAction now dispatches WelcomeNotification — fake it so
+    // tests don't hit a real mailer.
+    Notification::fake();
 });
 
 it('registers a new user and returns the auth envelope', function (): void {

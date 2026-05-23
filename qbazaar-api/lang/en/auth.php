@@ -58,4 +58,29 @@ return [
             'line_ignore' => 'If you did not create an account, no further action is required.',
         ],
     ],
+
+    'welcome' => [
+        'mail' => [
+            'subject' => 'Welcome to QBazaar',
+            'greeting' => 'Welcome, :name!',
+            'line_intro' => 'Thanks for joining QBazaar — Qatar\'s classifieds marketplace.',
+            'line_verify' => 'Verify your email to unlock the full experience.',
+            'action' => 'Verify Email Address',
+            'line_ignore' => 'If you did not create this account, you can safely ignore this message.',
+        ],
+    ],
+
+    'security_alert' => [
+        'mail' => [
+            'subject' => 'New sign-in to your QBazaar account',
+            'greeting' => 'Hello :name,',
+            'line_intro' => 'We noticed a sign-in to your QBazaar account from a new device.',
+            'line_device' => 'Device: :device',
+            'line_ip' => 'IP address: :ip',
+            'line_time' => 'When: :time',
+            'line_if_you' => 'If this was you, no action is needed.',
+            'line_if_not_you' => 'If this was not you, please reset your password immediately.',
+            'action' => 'Reset Password',
+        ],
+    ],
 ];
