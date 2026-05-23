@@ -237,19 +237,19 @@
 | BE-1.11 | Email verification link handler | `GET /auth/verify-email/{id}/{hash}` | Spatie signed URL ✅ commit `8806d45` |
 | BE-1.12 | OtpService | — | Generate, hash, verify, expire ✅ commit `e6371b1` |
 | BE-1.13 | RefreshTokenService | — | Mutex/lock للـ race condition |
-| BE-1.14 | UserObserver | — | Activity log on status change, password change, email change |
-| BE-1.15 | EnsureUserIsActive middleware | — | Block suspended users on protected routes |
-| BE-1.16 | EnsurePhoneVerified middleware | — | Required for certain endpoints |
+| BE-1.14 | UserObserver | — | Activity log on status change, password change, email change ✅ commit `bd28549` |
+| BE-1.15 | EnsureUserIsActive middleware | — | Block suspended users on protected routes ✅ commit `e0a1012` |
+| BE-1.16 | EnsurePhoneVerified middleware | — | Required for certain endpoints ✅ commit `e0a1012` |
 | BE-1.17 | OtpNotification (Twilio) | — | Locale-aware ✅ commits `e6371b1` + `22b6fe6` |
-| BE-1.18 | WelcomeNotification (mail) | — | |
+| BE-1.18 | WelcomeNotification (mail) | — | ✅ commit `5083e0e` |
 | BE-1.19 | PasswordResetNotification | — | ✅ commit `1f38783` |
-| BE-1.20 | SecurityAlertNotification | — | New device login |
+| BE-1.20 | SecurityAlertNotification | — | New device login ✅ commit `99bfd7b` (fingerprint stored on refresh_tokens.device_fingerprint) |
 | BE-1.21 | Migration: `users` table updates | — | Add language, phone_verified, last_login_at |
 | BE-1.22 | Migration: `otp_codes` table | — | phone, code_hash, attempts, expires_at, used_at ✅ commit `e6371b1` |
 | BE-1.23 | Migration: `refresh_tokens` table | — | user_id, token_hash, device_fingerprint, expires_at |
 | BE-1.24 | UserFactory + OtpCodeFactory | — | |
-| BE-1.25 | Pest Feature Tests: 8 endpoints × happy path + edge cases | — | Min 30 tests |
-| BE-1.26 | Scribe annotations لكل endpoint | — | Examples + Form Request docs |
+| BE-1.25 | Pest Feature Tests: 11 endpoints × happy path + edge cases | — | 60+ tests ✅ commits `a82269a` + `bd28549` + `e0a1012` |
+| BE-1.26 | Inline PHPDoc + Swagger UI (Scribe removed in favour of single openapi/v1.yaml surface) | — | ✅ commits `beb5f13` (annotations) + `eab83a4` (Scribe removal) |
 | BE-1.27 | Localization: `lang/{ar,en}/auth.php` + `messages.php` | — | كل error messages ✅ across `e6371b1`, `1f38783`, `8806d45` |
 
 ### 🟣 Frontend Tasks (`qbazaar-web`)
