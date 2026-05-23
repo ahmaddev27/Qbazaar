@@ -228,29 +228,29 @@
 | BE-1.2 | LoginController + LoginRequest | `POST /auth/login` | Accept email أو phone كـ identifier |
 | BE-1.3 | LogoutController | `POST /auth/logout` | Revoke current token |
 | BE-1.4 | RefreshTokenController + custom Layer | `POST /auth/refresh` | Issue new access + rotated refresh token. Device fingerprint check |
-| BE-1.5 | OtpController::send | `POST /auth/send-otp` | Twilio integration, 6 digits, 5min expiry, throttle 3/min by phone |
-| BE-1.6 | OtpController::verify | `POST /auth/verify-otp` | Max 3 attempts, mark phone_verified |
-| BE-1.7 | OtpController::resend | `POST /auth/resend-otp` | Cooldown 60s, max 5/hour |
-| BE-1.8 | PasswordResetController::forgot | `POST /auth/forgot-password` | Send email with token |
-| BE-1.9 | PasswordResetController::reset | `POST /auth/reset-password` | Validate token, set new password |
-| BE-1.10 | EmailVerificationController | `POST /auth/send-email-verification` | Auth required |
-| BE-1.11 | Email verification link handler | `GET /auth/verify-email/{id}/{hash}` | Spatie signed URL |
-| BE-1.12 | OtpService | — | Generate, hash, verify, expire |
+| BE-1.5 | OtpController::send | `POST /auth/send-otp` | Twilio integration, 6 digits, 5min expiry, throttle 3/min by phone ✅ commit `e6371b1` |
+| BE-1.6 | OtpController::verify | `POST /auth/verify-otp` | Max 3 attempts, mark phone_verified ✅ commit `e6371b1` |
+| BE-1.7 | OtpController::resend | `POST /auth/resend-otp` | Cooldown 60s, max 5/hour ✅ commit `e6371b1` |
+| BE-1.8 | PasswordResetController::forgot | `POST /auth/forgot-password` | Send email with token ✅ commit `1f38783` |
+| BE-1.9 | PasswordResetController::reset | `POST /auth/reset-password` | Validate token, set new password ✅ commit `1f38783` |
+| BE-1.10 | EmailVerificationController | `POST /auth/send-email-verification` | Auth required ✅ commit `8806d45` |
+| BE-1.11 | Email verification link handler | `GET /auth/verify-email/{id}/{hash}` | Spatie signed URL ✅ commit `8806d45` |
+| BE-1.12 | OtpService | — | Generate, hash, verify, expire ✅ commit `e6371b1` |
 | BE-1.13 | RefreshTokenService | — | Mutex/lock للـ race condition |
 | BE-1.14 | UserObserver | — | Activity log on status change, password change, email change |
 | BE-1.15 | EnsureUserIsActive middleware | — | Block suspended users on protected routes |
 | BE-1.16 | EnsurePhoneVerified middleware | — | Required for certain endpoints |
-| BE-1.17 | OtpNotification (Twilio) | — | Locale-aware |
+| BE-1.17 | OtpNotification (Twilio) | — | Locale-aware ✅ commits `e6371b1` + `22b6fe6` |
 | BE-1.18 | WelcomeNotification (mail) | — | |
-| BE-1.19 | PasswordResetNotification | — | |
+| BE-1.19 | PasswordResetNotification | — | ✅ commit `1f38783` |
 | BE-1.20 | SecurityAlertNotification | — | New device login |
 | BE-1.21 | Migration: `users` table updates | — | Add language, phone_verified, last_login_at |
-| BE-1.22 | Migration: `otp_codes` table | — | phone, code_hash, attempts, expires_at, used_at |
+| BE-1.22 | Migration: `otp_codes` table | — | phone, code_hash, attempts, expires_at, used_at ✅ commit `e6371b1` |
 | BE-1.23 | Migration: `refresh_tokens` table | — | user_id, token_hash, device_fingerprint, expires_at |
 | BE-1.24 | UserFactory + OtpCodeFactory | — | |
 | BE-1.25 | Pest Feature Tests: 8 endpoints × happy path + edge cases | — | Min 30 tests |
 | BE-1.26 | Scribe annotations لكل endpoint | — | Examples + Form Request docs |
-| BE-1.27 | Localization: `lang/{ar,en}/auth.php` + `validation.php` | — | كل error messages |
+| BE-1.27 | Localization: `lang/{ar,en}/auth.php` + `messages.php` | — | كل error messages ✅ across `e6371b1`, `1f38783`, `8806d45` |
 
 ### 🟣 Frontend Tasks (`qbazaar-web`)
 
@@ -258,14 +258,14 @@
 |----|------|------------------|
 | FE-1.1 | Login page | `app/(auth)/login/page.tsx` ✅ Wave 1 (locale segment deferred to Wave 2) |
 | FE-1.2 | Register page | `app/(auth)/register/page.tsx` ✅ Wave 1 |
-| FE-1.3 | OTP verification page | `app/[locale]/(auth)/verify-otp/page.tsx` — *deferred to Wave 2* |
-| FE-1.4 | Forgot password page | `app/[locale]/(auth)/forgot-password/page.tsx` — *deferred to Wave 2* |
-| FE-1.5 | Reset password page | `app/[locale]/(auth)/reset-password/page.tsx` — *deferred to Wave 2* |
-| FE-1.6 | Email verification page | `app/[locale]/verify-email/page.tsx` — *deferred to Wave 2* |
+| FE-1.3 | OTP verification page | `app/(auth)/verify-otp/page.tsx` ✅ commit `57a35e0` |
+| FE-1.4 | Forgot password page | `app/(auth)/forgot-password/page.tsx` ✅ commit `7178034` |
+| FE-1.5 | Reset password page | `app/(auth)/reset-password/page.tsx` ✅ commit `37a82bd` |
+| FE-1.6 | Email verification page | `app/verify-email/page.tsx` ✅ commit `6589516` |
 | FE-1.7 | Auth layout (split with hero image) | `app/(auth)/layout.tsx` — مرجع `auth.jsx` mockup ✅ Wave 1 |
 | FE-1.8 | LoginForm component | `components/auth/LoginForm.tsx` ✅ Wave 1 |
 | FE-1.9 | RegisterForm component | `components/auth/RegisterForm.tsx` ✅ Wave 1 |
-| FE-1.10 | OtpInput (4 boxes auto-advance) | `components/auth/OtpInput.tsx` — *deferred to Wave 2* |
+| FE-1.10 | OtpInput (6 boxes auto-advance) | `components/auth/OtpInput.tsx` ✅ commit `237a318` |
 | FE-1.11 | PasswordStrengthIndicator | `components/auth/PasswordStrengthIndicator.tsx` ✅ Wave 1 |
 | FE-1.12 | PhoneInput (Qatar prefix +974) | `components/auth/PhoneInput.tsx` ✅ Wave 1 |
 | FE-1.13 | Auth Zustand store | `store/auth.ts` — user, accessToken (memory), isLoading ✅ Wave 1 |
