@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
+use App\Http\Controllers\Api\V1\Auth\OtpController;
+use App\Http\Controllers\Api\V1\Auth\PasswordResetController;
 use App\Http\Controllers\Api\V1\Auth\RefreshTokenController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use Illuminate\Http\JsonResponse;
@@ -62,7 +65,9 @@ Route::get('/openapi.yaml', function (): Response {
 // Sprint endpoints land here, one Route group per domain.
 // ────────────────────────────────────────────────────────────────────────────
 
-// ── Sprint 1 — Auth (Wave 1: register / login / logout / refresh) ───────────
+// ── Sprint 1 — Auth ─────────────────────────────────────────────────────────
+//   Wave 1: register / login / logout / refresh
+//   Wave 2: OTP (send/verify/resend), password reset, email verification
 Route::prefix('auth')->name('api.v1.auth.')->group(function (): void {
     Route::post('/register', RegisterController::class)
         ->middleware('throttle:auth')
@@ -79,4 +84,42 @@ Route::prefix('auth')->name('api.v1.auth.')->group(function (): void {
     Route::post('/refresh', RefreshTokenController::class)
         ->middleware('throttle:auth')
         ->name('refresh');
+
+    // OTP — phone verification (Wave 2)
+    Route::post('/send-otp', [OtpController::class, 'send'])
+        ->middleware('throttle:otp')
+        ->name('send-otp');
+
+    Route::post('/verify-otp', [OtpController::class, 'verify'])
+        ->middleware('throttle:otp')
+        ->name('verify-otp');
+
+    Route::post('/resend-otp', [OtpController::class, 'resend'])
+        ->middleware('throttle:otp')
+        ->name('resend-otp');
+
+    // Password reset (Wave 2)
+    Route::post('/forgot-password', [PasswordResetController::class, 'forgot'])
+        ->middleware('throttle:auth')
+        ->name('forgot-password');
+
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])
+        ->middleware('throttle:auth')
+        ->name('reset-password');
+
+    // Helper alias used by PasswordResetNotification when it can't reach the
+    // frontend URL — points clients at an API-signed reset link. Hidden from
+    // the public contract.
+    Route::get('/password-reset/verify', fn () => response()->noContent())
+        ->middleware('signed')
+        ->name('password.reset.link');
+
+    // Email verification (Wave 2)
+    Route::post('/send-email-verification', [EmailVerificationController::class, 'send'])
+        ->middleware('auth:sanctum')
+        ->name('send-email-verification');
+
+    Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+        ->middleware('signed')
+        ->name('verify-email');
 });

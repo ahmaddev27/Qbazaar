@@ -37,4 +37,20 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Twilio (SMS — OTP delivery)
+    |--------------------------------------------------------------------------
+    |
+    | Leaving TWILIO_SID empty puts us in "dev mode": the OtpNotification's
+    | TwilioSmsChannel skips the real API call and instead emits to the local
+    | log + (optionally) the user's email so devs can grab the code without a
+    | real SMS round-trip.
+    */
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'from' => env('TWILIO_FROM'),
+    ],
+
 ];

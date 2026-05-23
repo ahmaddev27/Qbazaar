@@ -171,6 +171,21 @@ class RefreshTokenService
     }
 
     /**
+     * Force every still-active refresh token for the given user into the
+     * "used" state in one update. Used by sensitive actions such as
+     * password reset, where the security policy is "log them out everywhere".
+     *
+     * @return int number of rows burnt
+     */
+    public function burnAllForUser(User $user): int
+    {
+        return RefreshToken::query()
+            ->where('user_id', $user->id)
+            ->whereNull('used_at')
+            ->update(['used_at' => Carbon::now()]);
+    }
+
+    /**
      * Looks up the candidate row for a presented raw refresh token.
      *
      * We embed the row ID (a ULID) in the raw token itself so we can do a single

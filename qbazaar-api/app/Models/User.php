@@ -7,7 +7,11 @@ namespace App\Models;
 use App\Enums\AccountType;
 use App\Enums\Language;
 use App\Enums\UserStatus;
+use App\Notifications\EmailVerificationNotification;
+use App\Notifications\PasswordResetNotification;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -33,7 +37,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon $updated_at
  * @property Carbon|null $deleted_at
  */
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPasswordContract, MustVerifyEmailContract
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasUlids, Notifiable, SoftDeletes;
@@ -77,5 +81,44 @@ class User extends Authenticatable
             'status' => UserStatus::class,
             'language' => Language::class,
         ];
+    }
+
+    /* ──────────────────────────────────────────────────────────────────
+     *  Password reset — wire Laravel's Password broker to our localised
+     *  notification instead of the default English one.
+     * ──────────────────────────────────────────────────────────────────*/
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new PasswordResetNotification($token));
+    }
+
+    public function getEmailForPasswordReset(): string
+    {
+        return $this->email;
+    }
+
+    /* ──────────────────────────────────────────────────────────────────
+     *  Email verification — we use a `email_verified` boolean (legacy
+     *  reason: easier to query in the admin); these methods translate
+     *  Laravel's MustVerifyEmail contract onto our boolean.
+     * ──────────────────────────────────────────────────────────────────*/
+    public function hasVerifiedEmail(): bool
+    {
+        return (bool) $this->email_verified;
+    }
+
+    public function markEmailAsVerified(): bool
+    {
+        return $this->forceFill(['email_verified' => true])->save();
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new EmailVerificationNotification);
+    }
+
+    public function getEmailForVerification(): string
+    {
+        return $this->email;
     }
 }
