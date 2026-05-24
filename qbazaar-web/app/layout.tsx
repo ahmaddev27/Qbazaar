@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Cairo, DM_Sans, Geist_Mono, Instrument_Serif } from 'next/font/google';
+import { Amiri, Cairo, DM_Sans, Geist_Mono, Instrument_Serif } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
 import { Providers } from './providers';
@@ -24,6 +24,15 @@ const cairo = Cairo({
   variable: '--font-cairo',
 });
 
+// Amiri — classic Arabic serif. Used as the display heading face for RTL,
+// pairing with Instrument Serif's editorial vibe on the LTR side.
+const amiri = Amiri({
+  subsets: ['arabic'],
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-amiri',
+});
+
 const geistMono = Geist_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
@@ -46,7 +55,7 @@ export default function RootLayout({
       lang="ar"
       dir="rtl"
       suppressHydrationWarning
-      className={`${dmSans.variable} ${instrumentSerif.variable} ${cairo.variable} ${geistMono.variable}`}
+      className={`${dmSans.variable} ${instrumentSerif.variable} ${cairo.variable} ${amiri.variable} ${geistMono.variable}`}
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
