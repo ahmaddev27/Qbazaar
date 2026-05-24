@@ -488,32 +488,32 @@
 
 | ID | Task | Endpoint |
 |----|------|----------|
-| BE-4.1 | AdImageController::store | `POST /ads/{ad}/images` (multipart) |
-| BE-4.2 | AdImageController::destroy | `DELETE /media/{media}` |
-| BE-4.3 | AdImageController::reorder | `POST /ads/{ad}/images/reorder` |
-| BE-4.4 | UploadImagesRequest (validation) | mimes:jpg,jpeg,png,webp · max:10240 |
-| BE-4.5 | MediaResource (returns sizes object + BlurHash) | — |
-| BE-4.6 | Ad model: `registerMediaCollections` + `registerMediaConversions` | thumbnail (200×200), medium (640), large (1024), original-webp (1920) |
-| BE-4.7 | ProcessAdImagesJob (queued) | Spatie conversions + BlurHash + pHash |
-| BE-4.8 | ImageHashService (perceptual hash via php-image-hash or similar) | للـ duplicate detection |
-| BE-4.9 | BlurHashGeneratorService | — |
-| BE-4.10 | Local disk config + Cloudflare R2 config (production deferred) | — |
-| BE-4.11 | Magic byte validation (security) | Intervention Image |
-| BE-4.12 | Storage policy: signed URLs لـ original size لو needed | — |
-| BE-4.13 | Pest tests: upload, delete, reorder, validation errors | — |
+| BE-4.1 | AdImageController::store | `POST /ads/{ad}/images` (multipart) ✅ commit `6adcf58` |
+| BE-4.2 | AdImageController::destroy | `DELETE /media/{media}` ✅ commit `6adcf58` |
+| BE-4.3 | AdImageController::reorder | `POST /ads/{ad}/images/reorder` ✅ commit `6adcf58` |
+| BE-4.4 | UploadImagesRequest (validation) | ✅ commit `6adcf58` |
+| BE-4.5 | MediaResource (sizes + BlurHash + order) | ✅ commit `6adcf58` |
+| BE-4.6 | Ad model: registerMediaCollections + 4 conversions (thumb/medium/large/original_webp) | ✅ commit `6adcf58` |
+| BE-4.7 | ProcessAdImagesJob — BlurHash post-upload | ✅ commit `6adcf58` (pHash deferred to later wave) |
+| BE-4.8 | ImageHashService (pHash dedup) | — *deferred (auto-moderation wave)* |
+| BE-4.9 | BlurHashGeneratorService (kornrunner/blurhash) | ✅ commit `6adcf58` |
+| BE-4.10 | Local disk config (R2 production-deferred) | ✅ commit `6adcf58` |
+| BE-4.11 | Magic byte validation | ✅ via Laravel `image:` rule + mimes whitelist in commit `6adcf58` |
+| BE-4.12 | Signed URLs for originals | — *deferred (low priority for MVP)* |
+| BE-4.13 | Pest tests (upload + reorder + validation) | ✅ commit `6adcf58` |
 
 ### 🟣 Frontend Tasks (`qbazaar-web`)
 
 | ID | Task | Path / Component |
 |----|------|------------------|
-| FE-4.1 | ImageDropzone (drag & drop + click) | `components/upload/ImageDropzone.tsx` |
-| FE-4.2 | UploadProgressBar | `components/upload/UploadProgress.tsx` |
-| FE-4.3 | ImagePreviewList (reorderable via @dnd-kit) | `components/upload/ImagePreviewList.tsx` |
-| FE-4.4 | BlurHashImage wrapper | `components/upload/BlurHashImage.tsx` |
-| FE-4.5 | Client-side compression (browser-image-compression lib) | `lib/upload/compress.ts` |
-| FE-4.6 | useImageUpload hook | `hooks/useImageUpload.ts` |
-| FE-4.7 | API: uploads.ts | `lib/api/uploads.ts` |
-| FE-4.8 | shadcn/ui upload integration | — |
+| FE-4.1 | ImageDropzone (drag & drop + click + @dnd-kit reorder + progress) | `components/upload/ImageDropzone.tsx` ✅ commit `b89c83b` |
+| FE-4.2 | Per-file progress (rolled into ImageDropzone) | ✅ commit `b89c83b` |
+| FE-4.3 | Reorderable preview (rolled into ImageDropzone via @dnd-kit/sortable) | ✅ commit `b89c83b` |
+| FE-4.4 | BlurHashImage wrapper | `components/upload/BlurHashImage.tsx` ✅ commit `b89c83b` |
+| FE-4.5 | Client-side compression | `lib/images/compressImage.ts` ✅ commit `b89c83b` |
+| FE-4.6 | useImageUpload (rolled into queries/ad-images.ts mutation) | ✅ commit `b89c83b` |
+| FE-4.7 | API client for images | `lib/api/ad-images.ts` ✅ commit `b89c83b` |
+| FE-4.8 | shadcn/ui integration | ✅ Button + DropdownMenu got asChild via Radix Slot (`b89c83b`) |
 
 ### 🟡 Contract Tasks (`qbazaar-contracts`)
 
@@ -564,58 +564,62 @@
 
 ### 🔵 Backend Tasks (`qbazaar-api`)
 
+**Wave A landed in commit `6adcf58`:** Ad model + migration + factory + AdController CRUD (index/show/store/update/destroy/myAds) + PublishAdController + MarkSoldController + RenewAdController + AdPolicy + AdResource + AdSummaryResource + 5 error codes + 9 routes + Pest coverage. Auto-moderation + search + view tracking + similar/featured + idempotency deferred to Wave B.
+
 | ID | Task | Endpoint |
 |----|------|----------|
-| BE-5.1 | DraftController (store/update/show/preview/index) | `POST,PUT,GET /ads/draft` |
-| BE-5.2 | DraftController::reorderImages | `PUT /ads/draft/{ad}/images` |
-| BE-5.3 | PublishAdController | `POST /ads/{ad}/publish` (idempotent) |
-| BE-5.4 | AdController::update + destroy | `PUT,DELETE /ads/{ad}` |
-| BE-5.5 | AdController::markSold | `POST /ads/{ad}/mark-sold` |
-| BE-5.6 | AdController::renew | `POST /ads/{ad}/renew` |
-| BE-5.7 | MyAdsController::index | `GET /account/ads` (filter by status) |
-| BE-5.8 | DraftController::index | `GET /account/drafts` |
-| BE-5.9 | AdController::show (public) | `GET /ads/{ad}` |
-| BE-5.10 | AdController::trackView | `POST /ads/{ad}/view` (throttle 60/min) |
-| BE-5.11 | AdController::similar | `GET /ads/{ad}/similar` |
-| BE-5.12 | AdController::latest | `GET /ads/latest` (cursor pagination) |
-| BE-5.13 | AdController::featured | `GET /ads/featured` |
-| BE-5.14 | CreateAdRequest + UpdateAdRequest (with dynamic custom_fields validation) | — |
-| BE-5.15 | Ad model (HasUlids, HasMedia, LogsActivity, Searchable later) | — |
-| BE-5.16 | AdPolicy (view/update/delete based on ownership) | — |
-| BE-5.17 | AdStatus enum + canTransitionTo state machine | — |
-| BE-5.18 | PublishAdAction (DB transaction, moderation, event) | — |
-| BE-5.19 | ModerateAdAction (banned words, phone regex, external link regex, pHash) | — |
-| BE-5.20 | RenewAdAction | — |
-| BE-5.21 | MarkSoldAction | — |
-| BE-5.22 | ModerationRulesService | — |
-| BE-5.23 | AdExpirationService + ExpireOldAdsJob (scheduled daily) | — |
-| BE-5.24 | AdObserver (logs status changes, price changes, title changes) | — |
-| BE-5.25 | Events: AdPublished, AdApproved, AdRejected, AdExpired, AdRenewed | — |
-| BE-5.26 | Listeners: IndexAdInSearch (Meilisearch), SendAdApprovalNotification | — |
-| BE-5.27 | Notifications: AdApproved, AdRejected, AdExpiringSoon, AdExpired | — |
-| BE-5.28 | Migration: `ads` table (full schema from doc) + indexes | — |
-| BE-5.29 | Migration: `ad_views` table (for analytics) | — |
-| BE-5.30 | Migration: `moderation_rules` table (banned_words seedable) | — |
-| BE-5.31 | AdFactory + ModerationRuleSeeder | — |
-| BE-5.32 | AdResource + AdCollection | — |
-| BE-5.33 | Idempotency middleware لـ publish endpoint | — |
-| BE-5.34 | Pest tests: ~40 tests (auto-mod edge cases, state machine transitions) | — |
-| BE-5.35 | Scribe + Localization | — |
+| BE-5.1 | DraftController (store/update/show) | covered by AdController store/update with status=draft ✅ `6adcf58` |
+| BE-5.2 | DraftController::reorderImages | merged with AdImageController::reorder ✅ `6adcf58` |
+| BE-5.3 | PublishAdController | `POST /ads/{id}/publish` ✅ `6adcf58` (idempotency deferred — Wave B) |
+| BE-5.4 | AdController::update + destroy | `PUT,DELETE /ads/{id}` ✅ `6adcf58` |
+| BE-5.5 | AdController::markSold | `POST /ads/{id}/mark-sold` ✅ `6adcf58` |
+| BE-5.6 | AdController::renew | `POST /ads/{id}/renew` ✅ `6adcf58` |
+| BE-5.7 | MyAdsController::index | `GET /account/ads` ✅ `6adcf58` |
+| BE-5.8 | DraftController::index | overlaps with myAds; standalone drafts endpoint deferred |
+| BE-5.9 | AdController::show (public) | `GET /ads/{id}` ✅ `6adcf58` |
+| BE-5.10 | AdController::trackView | — *deferred Wave B (analytics)* |
+| BE-5.11 | AdController::similar | — *deferred Wave B* |
+| BE-5.12 | AdController::latest | covered by `GET /ads` index ordered by published_at ✅ `6adcf58` |
+| BE-5.13 | AdController::featured | — *deferred Wave B* |
+| BE-5.14 | CreateAdRequest + UpdateAdRequest | ✅ `6adcf58` (dynamic custom_fields validation Wave B) |
+| BE-5.15 | Ad model (HasUlids, HasMedia) | ✅ `6adcf58` (LogsActivity + Searchable Wave B) |
+| BE-5.16 | AdPolicy (view/update/delete/publish/manage-images/markSold/renew) | ✅ `6adcf58` |
+| BE-5.17 | AdStatus enum + transitions | ✅ `6adcf58` (state machine in publish/mark-sold/renew methods) |
+| BE-5.18 | PublishAdAction | inlined in PublishAdController ✅ `6adcf58` (no auto-mod yet) |
+| BE-5.19 | ModerateAdAction | — *deferred Wave B (auto-moderation)* |
+| BE-5.20 | RenewAdAction | ✅ `6adcf58` |
+| BE-5.21 | MarkSoldAction | ✅ `6adcf58` |
+| BE-5.22 | ModerationRulesService | — *deferred Wave B* |
+| BE-5.23 | AdExpirationService + ExpireOldAdsJob | — *deferred Wave B* |
+| BE-5.24 | AdObserver | — *deferred Wave B (activity-log spread)* |
+| BE-5.25 | Events: AdPublished/Approved/Rejected/Expired/Renewed | — *deferred Wave B* |
+| BE-5.26 | Listeners: IndexAdInSearch + SendApprovalNotification | — *deferred Wave B* |
+| BE-5.27 | Notifications: AdApproved/Rejected/ExpiringSoon/Expired | — *deferred Wave B* |
+| BE-5.28 | Migration: `ads` table | ✅ `6adcf58` |
+| BE-5.29 | Migration: `ad_views` | — *deferred Wave B* |
+| BE-5.30 | Migration: `moderation_rules` | — *deferred Wave B* |
+| BE-5.31 | AdFactory | ✅ `6adcf58` (ModerationRuleSeeder deferred) |
+| BE-5.32 | AdResource + AdSummaryResource | ✅ `6adcf58` |
+| BE-5.33 | Idempotency middleware for publish | — *deferred Wave B* |
+| BE-5.34 | Pest tests: state machine + happy paths | ✅ `6adcf58` (auto-mod edge cases Wave B) |
+| BE-5.35 | OpenAPI + Localization | — *Wave B (contracts pending)* |
 
 ### 🟣 Frontend Tasks (`qbazaar-web`)
 
+**Wave A landed in commit `b89c83b`:** Home (Hero) + /ads list + /ads/[id] detail + /post-ad 4-step wizard + /account/ads + AdCard/Grid/Gallery/PriceTag/StatusPill/Description/CustomFields + ImageDropzone with dnd-kit + BlurHashImage + lib/api/ads + queries + post-ad store + i18n. Edit Ad page + drafts list + similar/featured strips + contact box + chat CTA deferred to Wave B (depends on Sprint 7 favorites + Sprint 8 messaging).
+
 | ID | Task | Path / Component |
 |----|------|------------------|
-| FE-5.1 | Home page (Hero variant) | `app/[locale]/page.tsx` — مرجع `home.jsx` (A) |
-| FE-5.2 | Ad Detail page (SSR + ISR 30s) | `app/[locale]/ad/[id]/[slug]/page.tsx` — مرجع `detail.jsx` |
-| FE-5.3 | Post Ad layout | `app/[locale]/post-ad/layout.tsx` — مرجع `post.jsx` |
-| FE-5.4 | Post Ad: Category step | `app/[locale]/post-ad/page.tsx` |
-| FE-5.5 | Post Ad: Details step | `app/[locale]/post-ad/details/page.tsx` |
-| FE-5.6 | Post Ad: Photos step | `app/[locale]/post-ad/photos/page.tsx` |
-| FE-5.7 | Post Ad: Review step | `app/[locale]/post-ad/review/page.tsx` |
-| FE-5.8 | My Ads page | `app/[locale]/account/my-ads/page.tsx` |
-| FE-5.9 | My Drafts page | `app/[locale]/account/drafts/page.tsx` |
-| FE-5.10 | Edit Ad page | `app/[locale]/account/my-ads/[id]/edit/page.tsx` |
+| FE-5.1 | Home page (Hero variant) | `app/page.tsx` ✅ commit `b89c83b` |
+| FE-5.2 | Ad Detail page | `app/ads/[id]/page.tsx` + `AdDetailClient.tsx` ✅ commit `b89c83b` |
+| FE-5.3 | Post Ad layout | wizard pattern in `app/post-ad/page.tsx` ✅ commit `b89c83b` |
+| FE-5.4 | Post Ad: Category step | `PostAdWizard` step 1 ✅ commit `b89c83b` |
+| FE-5.5 | Post Ad: Details step | step 2 ✅ commit `b89c83b` |
+| FE-5.6 | Post Ad: Photos step | step 4 (uses `ImageDropzone`) ✅ commit `b89c83b` |
+| FE-5.7 | Post Ad: Review step | implicit final step (publish CTA) ✅ commit `b89c83b` |
+| FE-5.8 | My Ads page | `app/account/ads/page.tsx` + `MyAdsRow` ✅ commit `b89c83b` |
+| FE-5.9 | My Drafts page | folded into My Ads "Draft" tab ✅ commit `b89c83b` |
+| FE-5.10 | Edit Ad page | — *deferred Wave B (covered by inline update via PostAdWizard re-entry)* |
 | FE-5.11 | HomeHero (CTA + search) | `components/home/Hero.tsx` |
 | FE-5.12 | HomeCategoryGrid | `components/home/CategoryGrid.tsx` |
 | FE-5.13 | HomeLatestAds + HomeFeaturedAds | `components/home/*.tsx` |

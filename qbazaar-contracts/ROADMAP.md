@@ -11,9 +11,9 @@
 
 | البند | القيمة |
 |-------|---------|
-| **Active Milestone** | Milestone 1 ✅ closed → **Milestone 2 — Marketplace Core** next |
-| **Active Sprint** | Sprint 0 ✅ → Sprint 1 ✅ → Sprint 2 ✅ → Sprint 3 ✅ → **Sprint 4 (Uploads) + Sprint 5 (Ads)** next |
-| **Active Day** | Sprint 3 closed — backend (`4e2a9b3`) + frontend (`a37b426`); 63 categories + 45 locations seeded |
+| **Active Milestone** | Milestone 2 — Marketplace Core (🟡 Wave A landed) |
+| **Active Sprint** | Sprint 0 ✅ → Sprint 1 ✅ → Sprint 2 ✅ → Sprint 3 ✅ → Sprint 4+5 ✅ Wave A → **Wave B (auto-mod + search + favorites)** next |
+| **Active Day** | Sprint 4+5 Wave A closed — backend (`6adcf58`) + frontend (`b89c83b`); Ad CRUD + image upload + Home/Detail/Post wizard live; auto-moderation + search deferred |
 | **Repo** | https://github.com/Qbazzar/Qbazaar — single monorepo, baseline pushed `71216d3`, transferred to `Qbazzar` org |
 | **Blockers** | لا يوجد |
 | **Manual user steps pending** | GitHub Project + 13 Milestones + Labels; sign-ups for Twilio + Sentry + FCM project |
@@ -257,33 +257,31 @@
 
 > القلب — الإعلانات والبحث. أهم Milestone في الـ MVP.
 
-### Sprint 4 — Uploads (2 أيام)
+### Sprint 4 — Uploads (2 أيام) ✅ Wave A
 
-- [ ] **Backend:** Spatie MediaLibrary setup, multi-size conversions (thumbnail/medium/large/original-webp), Cloudflare R2 connection, BlurHash, pHash for dedup
-- [ ] **Frontend:** Image picker + uploader, multi-file, progress, drag-reorder, BlurHash placeholder
-- [ ] **Contract:** Upload endpoints + media response schema
+- [x] **Backend:** Spatie MediaLibrary on Ad model, 4 conversions (thumb 200×200 / medium 640 / large 1024 / original_webp 1920), BlurHash via kornrunner — `6adcf58`. Cloudflare R2 + pHash deferred to Wave B.
+- [x] **Frontend:** ImageDropzone with @dnd-kit reorder, per-file progress, client compress, BlurHash placeholder — `b89c83b`.
+- [ ] **Contract:** Upload endpoints in openapi/v1.yaml — *deferred Wave B*
 
 ---
 
-### Sprint 5 — Ads (أسبوعين)
+### Sprint 5 — Ads (أسبوعين) ✅ Wave A
 
-- [ ] **Backend:**
-  - Ad CRUD (draft + publish)
-  - State machine (Draft → Pending → Active → Sold/Expired/Rejected/Blocked)
-  - Auto-moderation engine (banned words, phone detection, external links, image dedup)
+- [x] **Backend Wave A:**
+  - Ad CRUD (draft + publish + update + delete)
+  - State machine (Draft → Active → Sold/Expired) — auto-moderation Pending step deferred
   - Renew + Mark sold actions
-  - View tracking (throttled)
-  - Latest + Featured + Similar feeds
-  - Expire job (scheduled daily)
-  - AdPolicy + AdObserver
-- [ ] **Frontend:**
-  - Home page (Hero variant) - من home.jsx mockup
-  - Ad Details page (SSR) - من detail.jsx
-  - Post Ad multi-step flow (4 خطوات) - من post.jsx
-  - My Ads page (drafts + active)
-  - Renew/Mark sold/Delete actions
-- [ ] **Contract:** Full Ad schemas + endpoints
-- [ ] **Tests:** Auto-moderation edge cases (Arabic banned words, phone numbers in different formats)
+  - AdPolicy (view/update/delete/publish/mark-sold/renew/manage-images)
+  - 9 routes, 5 ErrorCodes, Pest coverage — `6adcf58`
+- [ ] **Backend Wave B (deferred):** Auto-moderation engine (banned words, phone detection, external links, image dedup), view tracking (throttled), Latest/Featured/Similar feeds, ExpireOldAdsJob (daily), AdObserver, Idempotency on publish, Notifications
+- [x] **Frontend Wave A:**
+  - Home page (Hero variant) — مرجع `home.jsx` ✅
+  - Ad Details page — مرجع `detail.jsx` ✅
+  - Post Ad multi-step flow (4 خطوات) — مرجع `post.jsx` ✅
+  - My Ads tabbed page with actions ✅
+  - `b89c83b`
+- [ ] **Frontend Wave B (deferred):** AdContactBox (depends on Sprint 8 messaging), AdSimilar (depends on Wave B backend), Edit Ad page
+- [ ] **Contract:** Full Ad schemas + endpoints in openapi/v1.yaml — *deferred Wave B*
 
 ---
 
