@@ -1039,6 +1039,435 @@ paths:
                             children: []
 
   # ──────────────────────────────────────────────────────────────────────────
+  # Ads (Sprint 4 + 5 — Wave A)
+  # ──────────────────────────────────────────────────────────────────────────
+  /api/v1/ads:
+    get:
+      tags: [Ads]
+      summary: Public feed of active ads
+      operationId: adsIndex
+      security: []
+      parameters:
+        - { name: category_id, in: query, schema: { $ref: '#/components/schemas/ULID' } }
+        - { name: location_id, in: query, schema: { $ref: '#/components/schemas/ULID' } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+      responses:
+        '200':
+          description: Paginated list of active ads
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdSummaryEnvelope'
+              examples:
+                feed:
+                  value:
+                    success: true
+                    data:
+                      - id: 01HM3XQV0AAAAAAAAAAAAAAAAA
+                        title: Mountain bike for sale
+                        price: 750.00
+                        price_formatted: 750.00 QAR
+                        price_type: fixed
+                        currency: QAR
+                        status: active
+                        primary_image: null
+                        category_slug: sports
+                        location_slug: doha
+                        published_at: '2026-05-24T09:00:00+00:00'
+                        created_at: '2026-05-24T08:00:00+00:00'
+                    meta:
+                      current_page: 1
+                      per_page: 20
+                      total: 1
+                      last_page: 1
+                      has_more: false
+    post:
+      tags: [Ads]
+      summary: Create a draft ad
+      operationId: adsStore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAdRequest'
+      responses:
+        '201':
+          description: Draft ad created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/v1/ads/{id}:
+    get:
+      tags: [Ads]
+      summary: Get ad detail
+      operationId: adsShow
+      security: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '200':
+          description: Ad detail (public visibility rules)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdEnvelope'
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Ads]
+      summary: Update an ad (owner only)
+      operationId: adsUpdate
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAdRequest'
+      responses:
+        '200':
+          description: Ad updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+    delete:
+      tags: [Ads]
+      summary: Soft-delete an ad (owner only)
+      operationId: adsDestroy
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '204': { description: Ad soft-deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/ads/{id}/publish:
+    post:
+      tags: [Ads]
+      summary: Publish a draft ad (DRAFT → ACTIVE)
+      operationId: adsPublish
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '200':
+          description: Ad published
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdEnvelope'
+              examples:
+                published:
+                  value:
+                    success: true
+                    data:
+                      id: 01HM3XQV0AAAAAAAAAAAAAAAAA
+                      status: active
+                      published_at: '2026-05-24T09:00:00+00:00'
+                      expires_at: '2026-06-23T09:00:00+00:00'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422':
+          description: AD_NOT_PUBLISHABLE / AD_IMAGES_REQUIRED / AD_DAILY_PUBLISH_LIMIT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/ads/{id}/mark-sold:
+    post:
+      tags: [Ads]
+      summary: Mark an ad as sold
+      operationId: adsMarkSold
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '200':
+          description: Ad marked sold
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/ads/{id}/renew:
+    post:
+      tags: [Ads]
+      summary: Renew an ad (extend expiry; flips EXPIRED → ACTIVE)
+      operationId: adsRenew
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '200':
+          description: Ad renewed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/ads/{ad}/images:
+    post:
+      tags: [Ads]
+      summary: Upload one or more images for an ad
+      operationId: adsImagesStore
+      parameters:
+        - { name: ad, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [images]
+              properties:
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: Images uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '413':
+          description: UPLOAD_TOO_LARGE
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '422':
+          description: UPLOAD_INVALID_MIME / UPLOAD_MAX_IMAGES_REACHED / UPLOAD_MAGIC_BYTES_MISMATCH
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/ads/{ad}/images/reorder:
+    post:
+      tags: [Ads]
+      summary: Reorder ad images
+      operationId: adsImagesReorder
+      parameters:
+        - { name: ad, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderImagesRequest'
+      responses:
+        '200':
+          description: Images reordered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/v1/media/{media}:
+    delete:
+      tags: [Ads]
+      summary: Delete a single ad image
+      operationId: mediaDestroy
+      parameters:
+        - { name: media, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '204': { description: Image removed }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/account/ads:
+    get:
+      tags: [Ads]
+      summary: List the caller's own ads (every status)
+      operationId: accountAds
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+      responses:
+        '200':
+          description: Paginated list of the caller's ads
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdSummaryEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Search (Sprint 6)
+  # ──────────────────────────────────────────────────────────────────────────
+  /api/v1/search:
+    get:
+      tags: [Search]
+      summary: Keyword + filter search backed by Meilisearch
+      operationId: searchIndex
+      security: []
+      parameters:
+        - { name: q, in: query, schema: { type: string, maxLength: 200 }, description: Optional keyword. Empty for filter-only search. }
+        - { name: category_id, in: query, schema: { $ref: '#/components/schemas/ULID' } }
+        - { name: category_slug, in: query, schema: { type: string, maxLength: 120 } }
+        - { name: location_id, in: query, schema: { $ref: '#/components/schemas/ULID' } }
+        - { name: location_slug, in: query, schema: { type: string, maxLength: 120 } }
+        - { name: price_min, in: query, schema: { type: number, minimum: 0 } }
+        - { name: price_max, in: query, schema: { type: number, minimum: 0 } }
+        - { name: condition, in: query, schema: { $ref: '#/components/schemas/Condition' } }
+        - { name: price_type, in: query, schema: { $ref: '#/components/schemas/PriceType' } }
+        - { name: sort, in: query, schema: { type: string, enum: [latest, oldest, price_asc, price_desc], default: latest } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: per_page, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 20 } }
+      responses:
+        '200':
+          description: Paginated search results with facets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResultsEnvelope'
+              examples:
+                results:
+                  value:
+                    success: true
+                    data:
+                      - id: 01HM3XQV0AAAAAAAAAAAAAAAAA
+                        title: Mountain bike for sale
+                        price: 750.00
+                        price_formatted: 750.00 QAR
+                        price_type: fixed
+                        currency: QAR
+                        status: active
+                        primary_image: null
+                        category_slug: sports
+                        location_slug: doha
+                        published_at: '2026-05-24T09:00:00+00:00'
+                        created_at: '2026-05-24T08:00:00+00:00'
+                    meta:
+                      current_page: 1
+                      last_page: 1
+                      per_page: 20
+                      total: 1
+                    facets:
+                      categories: { sports: 1 }
+                      locations: { doha: 1 }
+                      conditions: { used: 1 }
+                      price_types: { fixed: 1 }
+                      price_buckets:
+                        - { label: '500-1000', min: 500, max: 1000 }
+        '422': { $ref: '#/components/responses/ValidationError' }
+        '503':
+          description: SEARCH_INDEX_UNAVAILABLE
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/search/suggestions:
+    get:
+      tags: [Search]
+      summary: Prefix-match title suggestions for the search bar
+      operationId: searchSuggestions
+      security: []
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 1, maxLength: 100 } }
+      responses:
+        '200':
+          description: Up to 10 title suggestions
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { type: string }
+                        maxItems: 10
+              examples:
+                suggestions:
+                  value:
+                    success: true
+                    data: ['Mountain bike', 'Mountain trekking gear']
+
+  /api/v1/account/saved-searches:
+    get:
+      tags: [Search]
+      summary: List the caller's saved searches
+      operationId: savedSearchesIndex
+      responses:
+        '200':
+          description: Saved searches (newest first, max 10)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedSearchListEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Search]
+      summary: Persist a new saved search (cap 10/user)
+      operationId: savedSearchesStore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveSearchRequest'
+      responses:
+        '201':
+          description: Saved search created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SavedSearchEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422':
+          description: VALIDATION_FAILED or SEARCH_SAVED_LIMIT
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/account/saved-searches/{id}:
+    delete:
+      tags: [Search]
+      summary: Remove one of the caller's saved searches
+      operationId: savedSearchesDestroy
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '204': { description: Saved search removed }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404':
+          description: SEARCH_SAVED_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  # ──────────────────────────────────────────────────────────────────────────
   # Users (Sprint 2 — Wave 1)
   # ──────────────────────────────────────────────────────────────────────────
   /api/v1/users/{user}/block:
@@ -1997,6 +2426,231 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Location'
+
+    # ───── Ads (Sprint 4 + 5 — Wave A) ─────
+    AdStatus:
+      type: string
+      enum: [draft, pending, active, sold, expired, rejected, blocked]
+      description: Ad lifecycle status. Only `active` ads are publicly visible.
+
+    PriceType:
+      type: string
+      enum: [fixed, negotiable, free, contact]
+      description: How the listing price should be interpreted by the UI.
+
+    Condition:
+      type: string
+      enum: [new, like_new, used]
+
+    MediaSize:
+      type: object
+      properties:
+        url: { type: string, format: uri }
+        width: { type: integer, nullable: true }
+        height: { type: integer, nullable: true }
+
+    MediaSizes:
+      type: object
+      description: Multi-size derivatives generated by the upload pipeline.
+      properties:
+        thumbnail: { type: string, format: uri }
+        medium: { type: string, format: uri }
+        large: { type: string, format: uri }
+        original_webp: { type: string, format: uri }
+
+    Media:
+      type: object
+      properties:
+        id: { $ref: '#/components/schemas/ULID' }
+        collection: { type: string, example: images }
+        url: { type: string, format: uri }
+        sizes: { $ref: '#/components/schemas/MediaSizes' }
+        blurhash: { type: string, nullable: true }
+        width: { type: integer, nullable: true }
+        height: { type: integer, nullable: true }
+        order: { type: integer }
+        size_bytes: { type: integer }
+
+    AdSummary:
+      type: object
+      required: [id, title, status, currency]
+      properties:
+        id: { $ref: '#/components/schemas/ULID' }
+        title: { type: string }
+        price: { type: number, nullable: true }
+        price_formatted: { type: string, nullable: true, example: '750.00 QAR' }
+        price_type: { $ref: '#/components/schemas/PriceType' }
+        currency: { type: string, example: QAR }
+        status: { $ref: '#/components/schemas/AdStatus' }
+        primary_image: { $ref: '#/components/schemas/Media', nullable: true }
+        category_slug: { type: string, nullable: true }
+        location_slug: { type: string, nullable: true }
+        published_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    Ad:
+      type: object
+      required: [id, title, description, status, currency, price_type]
+      properties:
+        id: { $ref: '#/components/schemas/ULID' }
+        user_id: { $ref: '#/components/schemas/ULID' }
+        category_id: { $ref: '#/components/schemas/ULID' }
+        location_id: { $ref: '#/components/schemas/ULID' }
+        title: { type: string, minLength: 5, maxLength: 120 }
+        description: { type: string, minLength: 20, maxLength: 5000 }
+        price: { type: number, nullable: true }
+        price_type: { $ref: '#/components/schemas/PriceType' }
+        currency: { type: string, example: QAR }
+        condition: { $ref: '#/components/schemas/Condition', nullable: true }
+        status: { $ref: '#/components/schemas/AdStatus' }
+        custom_fields:
+          type: object
+          additionalProperties: true
+          nullable: true
+        views_count: { type: integer }
+        favorites_count: { type: integer }
+        category_slug: { type: string, nullable: true }
+        location_slug: { type: string, nullable: true }
+        images:
+          type: array
+          items: { $ref: '#/components/schemas/Media' }
+        published_at: { type: string, format: date-time, nullable: true }
+        expires_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    CreateAdRequest:
+      type: object
+      required: [category_id, location_id, title, description, price_type]
+      properties:
+        category_id: { $ref: '#/components/schemas/ULID' }
+        location_id: { $ref: '#/components/schemas/ULID' }
+        title: { type: string, minLength: 5, maxLength: 120 }
+        description: { type: string, minLength: 20, maxLength: 5000 }
+        price: { type: number, nullable: true, minimum: 0, maximum: 9999999 }
+        price_type: { $ref: '#/components/schemas/PriceType' }
+        condition: { $ref: '#/components/schemas/Condition', nullable: true }
+        custom_fields:
+          type: object
+          additionalProperties: true
+          nullable: true
+
+    UpdateAdRequest:
+      type: object
+      properties:
+        title: { type: string, minLength: 5, maxLength: 120 }
+        description: { type: string, minLength: 20, maxLength: 5000 }
+        price: { type: number, nullable: true, minimum: 0, maximum: 9999999 }
+        price_type: { $ref: '#/components/schemas/PriceType' }
+        condition: { $ref: '#/components/schemas/Condition', nullable: true }
+        category_id: { $ref: '#/components/schemas/ULID' }
+        location_id: { $ref: '#/components/schemas/ULID' }
+        custom_fields:
+          type: object
+          additionalProperties: true
+          nullable: true
+
+    ReorderImagesRequest:
+      type: object
+      required: [order]
+      properties:
+        order:
+          type: array
+          description: Ordered list of media ULIDs — index 0 is the primary image.
+          items: { $ref: '#/components/schemas/ULID' }
+
+    AdEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/Ad' }
+
+    PaginatedAdSummaryEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/AdSummary' }
+            meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    # ───── Search (Sprint 6) ─────
+    SearchFacets:
+      type: object
+      description: Aggregated counts returned alongside search results.
+      properties:
+        categories:
+          type: object
+          additionalProperties: { type: integer }
+        locations:
+          type: object
+          additionalProperties: { type: integer }
+        conditions:
+          type: object
+          additionalProperties: { type: integer }
+        price_types:
+          type: object
+          additionalProperties: { type: integer }
+        price_buckets:
+          type: array
+          items:
+            type: object
+            required: [label, min]
+            properties:
+              label: { type: string }
+              min: { type: number, nullable: true }
+              max: { type: number, nullable: true }
+
+    SearchResultsEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          required: [data, meta, facets]
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/AdSummary' }
+            meta: { $ref: '#/components/schemas/PaginationMeta' }
+            facets: { $ref: '#/components/schemas/SearchFacets' }
+
+    SavedSearch:
+      type: object
+      required: [id, name, query_params, created_at]
+      properties:
+        id: { $ref: '#/components/schemas/ULID' }
+        name: { type: string, minLength: 1, maxLength: 60 }
+        query_params:
+          type: object
+          additionalProperties: true
+          description: Opaque envelope replayed verbatim against `/search`.
+        created_at: { type: string, format: date-time }
+
+    SaveSearchRequest:
+      type: object
+      required: [name, query_params]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 60 }
+        query_params:
+          type: object
+          additionalProperties: true
+
+    SavedSearchEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/SavedSearch' }
+
+    SavedSearchListEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/SavedSearch' }
 
   responses:
     Unauthorized:

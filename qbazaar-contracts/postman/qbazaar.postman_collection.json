@@ -711,6 +711,300 @@
           }
         }
       ]
+    },
+    {
+      "name": "Ads",
+      "description": "Sprint 4 + 5 Wave A — ad CRUD, lifecycle, image uploads, and the seller's own ads list.",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Capture the ad id from create/show responses so subsequent",
+              "// requests in the folder can reference {{ad_id}} without a manual edit.",
+              "try {",
+              "  const json = pm.response.json();",
+              "  if (json && json.success && json.data && json.data.id) {",
+              "    pm.environment.set('ad_id', json.data.id);",
+              "  }",
+              "} catch (e) {}"
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "name": "GET /ads (public feed)",
+          "request": {
+            "method": "GET",
+            "auth": { "type": "noauth" },
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads"]
+            }
+          }
+        },
+        {
+          "name": "GET /ads/:id",
+          "request": {
+            "method": "GET",
+            "auth": { "type": "noauth" },
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}"]
+            }
+          }
+        },
+        {
+          "name": "POST /ads (create draft)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": \"{{category_id}}\",\n  \"location_id\": \"{{location_id}}\",\n  \"title\": \"Mountain bike for sale\",\n  \"description\": \"Lightly used aluminium frame mountain bike in great condition.\",\n  \"price\": 750,\n  \"price_type\": \"fixed\",\n  \"condition\": \"like_new\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads"]
+            }
+          }
+        },
+        {
+          "name": "PUT /ads/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Mountain bike — price drop\",\n  \"price\": 700\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /ads/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}"]
+            }
+          }
+        },
+        {
+          "name": "POST /ads/:id/publish",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}/publish",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}", "publish"]
+            }
+          }
+        },
+        {
+          "name": "POST /ads/:id/mark-sold",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}/mark-sold",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}", "mark-sold"]
+            }
+          }
+        },
+        {
+          "name": "POST /ads/:id/renew",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}/renew",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}", "renew"]
+            }
+          }
+        },
+        {
+          "name": "POST /ads/:ad/images (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "images[]", "type": "file", "src": [] }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}/images",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}", "images"]
+            }
+          }
+        },
+        {
+          "name": "POST /ads/:ad/images/reorder",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order\": [\"{{media_id_a}}\", \"{{media_id_b}}\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}/images/reorder",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}", "images", "reorder"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /media/:media",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/media/{{media_id_a}}",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["media", "{{media_id_a}}"]
+            }
+          }
+        },
+        {
+          "name": "GET /account/ads (my ads)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/ads",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "ads"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "description": "Sprint 6 — Meilisearch-powered search, suggestions, and per-user saved searches.",
+      "item": [
+        {
+          "name": "GET /search (keyword + filters)",
+          "request": {
+            "method": "GET",
+            "auth": { "type": "noauth" },
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/search?q=bike&price_min=100&price_max=2000&sort=latest&per_page=20",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["search"],
+              "query": [
+                { "key": "q", "value": "bike" },
+                { "key": "price_min", "value": "100" },
+                { "key": "price_max", "value": "2000" },
+                { "key": "sort", "value": "latest" },
+                { "key": "per_page", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /search/suggestions",
+          "request": {
+            "method": "GET",
+            "auth": { "type": "noauth" },
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/search/suggestions?q=moun",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["search", "suggestions"],
+              "query": [
+                { "key": "q", "value": "moun" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /account/saved-searches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/saved-searches",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "saved-searches"]
+            }
+          }
+        },
+        {
+          "name": "POST /account/saved-searches",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.success && json.data && json.data.id) {",
+                  "    pm.environment.set('saved_search_id', json.data.id);",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cheap mountain bikes\",\n  \"query_params\": {\n    \"q\": \"mountain bike\",\n    \"price_max\": 1000,\n    \"sort\": \"price_asc\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/saved-searches",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "saved-searches"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /account/saved-searches/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/saved-searches/{{saved_search_id}}",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "saved-searches", "{{saved_search_id}}"]
+            }
+          }
+        }
+      ]
     }
   ]
 }
