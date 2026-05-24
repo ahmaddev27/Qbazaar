@@ -1005,6 +1005,99 @@
           }
         }
       ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "POST /ads/:id/favorite",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json && json.success && json.data) {",
+                  "    pm.environment.set('last_favorite_state', String(json.data.favorited));",
+                  "    pm.environment.set('last_favorites_count', String(json.data.count));",
+                  "  }",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}/favorite",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}", "favorite"]
+            }
+          }
+        },
+        {
+          "name": "GET /account/favorites",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/favorites",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "favorites"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recently Viewed",
+      "item": [
+        {
+          "name": "POST /ads/:id/view",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [
+              { "key": "X-Session-Id", "value": "{{session_id}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/ads/{{ad_id}}/view",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["ads", "{{ad_id}}", "view"]
+            }
+          }
+        },
+        {
+          "name": "GET /account/recently-viewed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/recently-viewed",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "recently-viewed"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /account/recently-viewed",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/recently-viewed",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "recently-viewed"]
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -1468,6 +1468,103 @@ paths:
                 $ref: '#/components/schemas/ErrorEnvelope'
 
   # ──────────────────────────────────────────────────────────────────────────
+  # Favorites & Recently Viewed (Sprint 7)
+  # ──────────────────────────────────────────────────────────────────────────
+  /api/v1/ads/{id}/favorite:
+    post:
+      tags: [Favorites]
+      summary: Toggle the caller's favourite status for an ad
+      description: |
+        Idempotent toggle. First call favourites the ad and bumps
+        `ads.favorites_count`; second call by the same user removes it and
+        decrements the count. Returns the post-toggle state so the client
+        can render the heart icon + count immediately.
+      operationId: favoritesToggle
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '200':
+          description: Toggle result with the new favourite count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoriteToggleEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404':
+          description: AD_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/account/favorites:
+    get:
+      tags: [Favorites]
+      summary: List the caller's favourited ads, newest favourite first
+      operationId: favoritesIndex
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+      responses:
+        '200':
+          description: Paginated favourited ads (AdSummary + `favorited_at`)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFavoritedAdSummaryEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/ads/{id}/view:
+    post:
+      tags: [RecentlyViewed]
+      summary: Record an ad view (authenticated user OR anonymous session)
+      description: |
+        Tracks a view and increments `ads.views_count`. Throttled to one
+        recorded view per (viewer, ad) per hour. Authenticated users are
+        identified via their bearer token; anonymous clients pass a
+        stable identifier in the `X-Session-Id` header. Calls without
+        either identity are accepted and silently no-op.
+      operationId: recentlyViewedTrack
+      security: []
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+        - name: X-Session-Id
+          in: header
+          required: false
+          schema: { type: string, maxLength: 64 }
+          description: Stable opaque session id for anonymous viewers.
+      responses:
+        '204': { description: View recorded, throttled, or silent no-op }
+        '404':
+          description: AD_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/account/recently-viewed:
+    get:
+      tags: [RecentlyViewed]
+      summary: List the caller's recently-viewed ads, newest first
+      operationId: recentlyViewedIndex
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+      responses:
+        '200':
+          description: Paginated recently-viewed ads (AdSummary + `viewed_at`)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRecentlyViewedAdSummaryEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    delete:
+      tags: [RecentlyViewed]
+      summary: Clear the caller's recently-viewed history
+      operationId: recentlyViewedClear
+      responses:
+        '204': { description: History cleared }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  # ──────────────────────────────────────────────────────────────────────────
   # Users (Sprint 2 — Wave 1)
   # ──────────────────────────────────────────────────────────────────────────
   /api/v1/users/{user}/block:
@@ -2651,6 +2748,69 @@ components:
             data:
               type: array
               items: { $ref: '#/components/schemas/SavedSearch' }
+
+    # ───── Favorites & Recently Viewed (Sprint 7) ─────
+    FavoriteToggleResponse:
+      type: object
+      required: [favorited, count]
+      properties:
+        favorited:
+          type: boolean
+          description: True after the toggle if the ad is now favourited by the caller.
+        count:
+          type: integer
+          minimum: 0
+          description: The new total favourites count for the ad.
+
+    FavoriteToggleEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/FavoriteToggleResponse' }
+
+    FavoritedAdSummary:
+      allOf:
+        - $ref: '#/components/schemas/AdSummary'
+        - type: object
+          required: [favorited_at]
+          properties:
+            favorited_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: When the caller favourited this ad.
+
+    PaginatedFavoritedAdSummaryEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/FavoritedAdSummary' }
+            meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    RecentlyViewedAdSummary:
+      allOf:
+        - $ref: '#/components/schemas/AdSummary'
+        - type: object
+          required: [viewed_at]
+          properties:
+            viewed_at:
+              type: string
+              format: date-time
+              description: When the caller most recently viewed this ad.
+
+    PaginatedRecentlyViewedAdSummaryEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/RecentlyViewedAdSummary' }
+            meta: { $ref: '#/components/schemas/PaginationMeta' }
 
   responses:
     Unauthorized:
