@@ -545,3 +545,68 @@ export interface PaginatedResponse<T> {
     next: string | null;
   };
 }
+
+// ── Search (Sprint 6) ──────────────────────────────────────────────────────
+// The search domain reuses `AdSummary` for results — its public shape — and
+// adds the faceted-search envelope on top. Saved searches let the user
+// snapshot a parameter bag and rerun it from the account area.
+
+export type SortMode = 'latest' | 'oldest' | 'price_asc' | 'price_desc';
+
+/**
+ * The full set of query parameters accepted by `GET /api/v1/search`. Each
+ * field is optional: when absent the backend treats it as "no filter". Slug
+ * + id duplicates exist because the URL is slug-driven but the backend will
+ * accept either to keep call-sites flexible.
+ */
+export interface SearchQueryParams extends Record<string, unknown> {
+  q?: string;
+  category_id?: string;
+  category_slug?: string;
+  location_id?: string;
+  location_slug?: string;
+  price_min?: number;
+  price_max?: number;
+  condition?: AdCondition;
+  price_type?: PriceType;
+  sort?: SortMode;
+  page?: number;
+  per_page?: number;
+}
+
+/**
+ * Aggregated counts returned alongside the result page so the UI can render
+ * "147 in cars" badges next to filter rows. The keys are slugs (categories,
+ * locations) or canonical enum values (conditions) — never display strings.
+ */
+export interface SearchFacets {
+  categories: Record<string, number>;
+  locations: Record<string, number>;
+  price_buckets: { range: string; count: number }[];
+  conditions: Record<AdCondition, number>;
+}
+
+export interface SearchResponse extends PaginatedResponse<AdSummary> {
+  facets: SearchFacets;
+}
+
+export interface SearchSuggestion {
+  text: string;
+}
+
+/**
+ * One saved search row owned by the current user. `query_params` is the same
+ * bag accepted by `runSearch` — the "Run" action just restores it onto the
+ * URL.
+ */
+export interface SavedSearch {
+  id: string;
+  name: string;
+  query_params: SearchQueryParams;
+  created_at: string;
+}
+
+export type SearchErrorCode =
+  | 'SEARCH_INVALID_PARAMS'
+  | 'SAVED_SEARCH_LIMIT'
+  | 'SAVED_SEARCH_NOT_FOUND';

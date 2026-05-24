@@ -196,6 +196,7 @@
       "privacy": "Privacy",
       "data": "Data & account",
       "blocked_users": "Blocked users",
+      "saved_searches": "Saved searches",
       "sign_out": "Sign out",
       "sign_out_confirm": "Signed out"
     },
@@ -385,6 +386,18 @@
       "USER_008": "An export is already being prepared — check your email",
       "USER_009": "That file doesn't look like a supported image",
       "USER_010": "The image is too large (max 5 MB)"
+    },
+    "saved_searches": {
+      "title": "Saved searches",
+      "subtitle": "Save your favourite filters and rerun them in one click.",
+      "empty_title": "No saved searches yet",
+      "empty_body": "Save a search from the results page and it'll show up here.",
+      "run": "Run search",
+      "delete": "Delete",
+      "delete_confirm_title": "Delete this saved search?",
+      "delete_confirm_body": "You won't be able to restore it after deleting.",
+      "delete_success": "Saved search deleted",
+      "created_at": "Saved {date}"
     }
   },
   "users": {
@@ -609,6 +622,63 @@
       "ad_not_publishable": "Add at least one image before publishing",
       "create_failed": "Could not save the draft",
       "delete_failed": "Could not delete the ad"
+    }
+  },
+  "search": {
+    "title": "Search results",
+    "title_for": "Search results for: {query}",
+    "title_all": "All ads",
+    "placeholder": "Search for a car, flat, phone…",
+    "submit": "Search",
+    "open": "Open search",
+    "close": "Close",
+    "no_results": "No results. Try changing the filters.",
+    "results_count": "{count} results",
+    "results_loading": "Searching…",
+    "reset_filters": "Reset filters",
+    "clear_all": "Clear all",
+    "suggestions_empty": "No suggestions",
+    "prev": "Previous",
+    "next": "Next",
+    "page_of": "Page {current} of {total}",
+    "sort": {
+      "label": "Sort",
+      "latest": "Newest first",
+      "oldest": "Oldest first",
+      "price_asc": "Price: low to high",
+      "price_desc": "Price: high to low"
+    },
+    "facets": {
+      "categories": "Categories",
+      "locations": "Locations",
+      "price": "Price",
+      "price_min": "Min",
+      "price_max": "Max",
+      "condition": "Condition",
+      "buckets_hint": "Common price ranges"
+    },
+    "save_search": {
+      "button": "Save search",
+      "dialog_title": "Save this search",
+      "dialog_subtitle": "We'll snapshot the current filters so you can rerun them later.",
+      "name_label": "Search name",
+      "name_placeholder": "e.g. Pearl flats under 1M",
+      "name_required": "Give your search a name",
+      "name_max": "Name is too long (60 characters max)",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "success_toast": "Search saved",
+      "limit_error": "You've reached the saved-search limit",
+      "sign_in_required": "Sign in to save searches"
+    },
+    "errors": {
+      "search_invalid_params": "One of the filters is invalid, try again",
+      "saved_search_limit": "You've reached the saved-search limit",
+      "saved_search_not_found": "We couldn't find that saved search",
+      "load_failed": "Could not load search results",
+      "save_failed": "Could not save the search",
+      "delete_failed": "Could not delete the saved search"
     }
   }
 }
