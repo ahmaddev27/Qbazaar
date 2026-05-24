@@ -62,7 +62,6 @@
   --font-sans: var(--font-dm-sans), system-ui, sans-serif;
   --font-display: var(--font-instrument-serif), Georgia, serif;
   --font-arabic: var(--font-cairo), system-ui, sans-serif;
-  --font-arabic-display: var(--font-amiri), Georgia, serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
   --font-heading: var(--font-display);
 
@@ -191,27 +190,26 @@
   [dir="rtl"] body {
     font-family: var(--font-arabic), var(--font-sans);
   }
-  /* Display headings — Instrument Serif italic for LTR / Amiri for RTL.
-     The two serifs are visually paired: both have editorial elegance and a
-     softer feel than the body sans. We use Amiri (rather than Cairo) for
-     Arabic headings so they look distinct from body copy. */
+  /* Display headings — Instrument Serif italic for LTR / Cairo bold for RTL.
+     Cairo is the single Arabic family across body + headings; headings get
+     differentiated by weight (800) and tighter line-height, not by face. */
   .font-display em,
   .font-display {
-    font-family: var(--font-display), var(--font-arabic-display), var(--font-arabic), var(--font-sans);
+    font-family: var(--font-display), var(--font-arabic), var(--font-sans);
     font-feature-settings: "kern", "liga";
   }
   [dir="rtl"] .font-display,
   [dir="rtl"] .font-display em {
-    font-family: var(--font-arabic-display), var(--font-arabic), var(--font-display);
-    font-weight: 700;
+    font-family: var(--font-arabic), var(--font-display);
+    font-weight: 800;
     font-style: normal;
-    letter-spacing: 0;
-    line-height: 1.25;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
   }
   /* Bare h1..h6 get the heading font automatically — pages that author
      headings without `font-display` still inherit the Bazzar typography. */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display), var(--font-arabic-display), var(--font-arabic), var(--font-sans);
+    font-family: var(--font-display), var(--font-arabic), var(--font-sans);
     text-wrap: balance;
   }
   [dir="rtl"] h1,
@@ -220,9 +218,9 @@
   [dir="rtl"] h4,
   [dir="rtl"] h5,
   [dir="rtl"] h6 {
-    font-family: var(--font-arabic-display), var(--font-arabic), var(--font-display);
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: 1.25;
+    font-family: var(--font-arabic), var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
   }
 }
