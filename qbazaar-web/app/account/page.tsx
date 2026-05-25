@@ -95,12 +95,12 @@ export default function AccountDashboardPage() {
             primary
           />
           <QuickAction
-            href="/account"
+            href="/account/ads"
             icon={ListIcon}
             label={t('account.dashboard.quick_actions.my_ads')}
           />
           <QuickAction
-            href="/messages"
+            href="/account/messages"
             icon={MailIcon}
             label={t('account.dashboard.quick_actions.messages')}
           />
