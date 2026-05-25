@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Events\Ads;
+
+use App\Models\Ad;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+/**
+ * Fired when an admin manually approves a PENDING ad (Sprint 11 Filament UI
+ * will dispatch this). Kept as a separate event from {@see AdPublished} so
+ * notifications / activity logs can distinguish "auto-approved" vs.
+ * "manually approved by reviewer".
+ */
+class AdApproved
+{
+    use Dispatchable, SerializesModels;
+
+    public function __construct(public readonly Ad $ad) {}
+}

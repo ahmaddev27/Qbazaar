@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1\Ads;
 
+use App\Actions\Ads\ModerateAdAction;
+use App\Events\Ads\AdPublished;
+use App\Events\Ads\AdRejected;
 use App\Exceptions\DomainException;
 use App\Exceptions\ErrorCode;
 use App\Http\Controllers\Controller;
@@ -13,16 +16,25 @@ use App\Models\Ad;
 use Illuminate\Http\JsonResponse;
 
 /**
- * POST /api/v1/ads/{id}/publish — flip a draft to ACTIVE.
+ * POST /api/v1/ads/{id}/publish — flip a draft toward visibility.
  *
- * Wave A skips the PENDING moderation hop; we go DRAFT → ACTIVE directly so
- * sellers see their ads on the feed immediately. Auto-moderation will plug
- * in here without changing the controller's contract.
+ * The controller runs the auto-moderation action first:
+ *   - clean ad   → DRAFT → ACTIVE + AdPublished event + indexed for search.
+ *   - flagged ad → DRAFT → PENDING + AdRejected event (await manual review).
+ *
+ * Either branch returns 200 with the updated AdResource. The client inspects
+ * `data.status` to render the right post-publish UX:
+ *   `active`  → "Your ad is live"
+ *   `pending` → "We need to review your ad"
  *
  * @group Ads
  */
 class PublishAdController extends Controller
 {
+    public function __construct(
+        private readonly ModerateAdAction $moderate,
+    ) {}
+
     /**
      * @authenticated
      *
@@ -38,7 +50,16 @@ class PublishAdController extends Controller
 
         $this->authorize('publish', $ad);
 
-        $ad->publish();
+        $result = ($this->moderate)($ad);
+
+        if ($result->clean) {
+            $ad->publish();
+            AdPublished::dispatch($ad);
+        } else {
+            $ad->holdForReview();
+            AdRejected::dispatch($ad, $result);
+        }
+
         $ad->load(['user', 'category', 'location', 'media']);
 
         return response()->json((new AdResource($ad))->toArray($request));

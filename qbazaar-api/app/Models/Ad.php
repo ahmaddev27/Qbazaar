@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\AdStatus;
 use App\Enums\Condition;
 use App\Enums\PriceType;
+use App\Events\Ads\AdRejected;
 use Database\Factories\AdFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -45,11 +48,12 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property User $user
  * @property Category $category
  * @property Location $location
+ * @property bool $featured
  */
 class Ad extends Model implements HasMedia
 {
     /** @use HasFactory<AdFactory> */
-    use HasFactory, HasUlids, InteractsWithMedia, Searchable, SoftDeletes;
+    use HasFactory, HasUlids, InteractsWithMedia, LogsActivity, Searchable, SoftDeletes;
 
     protected $table = 'ads';
 
@@ -75,6 +79,7 @@ class Ad extends Model implements HasMedia
         'favorites_count',
         'published_at',
         'expires_at',
+        'featured',
     ];
 
     /**
@@ -92,7 +97,32 @@ class Ad extends Model implements HasMedia
             'published_at' => 'datetime',
             'expires_at' => 'datetime',
             'price' => 'decimal:2',
+            'featured' => 'boolean',
         ];
+    }
+
+    /**
+     * Spatie activity-log configuration. We log the user-facing attributes
+     * (title / description / price / status / category / location) under the
+     * `ad` log name so admin queries scope cleanly.
+     *
+     * `logOnlyDirty()` ensures we only persist a row when one of the watched
+     * columns actually changed — avoids one log entry per touch / counter bump.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'title',
+                'description',
+                'price',
+                'status',
+                'category_id',
+                'location_id',
+            ])
+            ->logOnlyDirty()
+            ->useLogName('ad')
+            ->dontLogEmptyChanges();
     }
 
     /* ──────────────────────────────────────────────────────────────────
@@ -162,10 +192,9 @@ class Ad extends Model implements HasMedia
      * ──────────────────────────────────────────────────────────────────*/
 
     /**
-     * Publish a draft. In Wave A we skip the PENDING auto-moderation step
-     * and transition straight to ACTIVE; Sprint 5 nice-to-have will add the
-     * moderation hop without changing the public contract.
+     * Publish a draft and transition straight to ACTIVE.
      *
+     * Used after auto-moderation clears the ad (see PublishAdController).
      * Calls `searchable()` explicitly so the ad is pushed to Meilisearch
      * the moment it transitions to ACTIVE — `shouldBeSearchable()` would
      * otherwise rely on the next ::save() to trigger Scout's observer, and
@@ -182,6 +211,40 @@ class Ad extends Model implements HasMedia
         ])->save();
 
         $this->searchable();
+    }
+
+    /**
+     * Park a flagged draft in PENDING — awaiting manual review.
+     *
+     * Caller fires {@see AdRejected} so the seller receives
+     * the rejection notification AND the search index is kept clean.
+     * Setting `published_at` to null keeps the public feed safe.
+     */
+    public function holdForReview(): void
+    {
+        $this->forceFill([
+            'status' => AdStatus::PENDING,
+            'published_at' => null,
+            'expires_at' => null,
+        ])->save();
+
+        // Defensive: a PENDING ad must never appear in search even if a
+        // previous publish leaked it through. Scout's shouldBeSearchable()
+        // would handle this on save, but we call it explicitly for the same
+        // reason as publish().
+        $this->unsearchable();
+    }
+
+    /**
+     * Mark a previously expired ad as EXPIRED + drop it from search.
+     * Invoked by the daily expiry job; kept on the model so the rule lives
+     * with the other lifecycle transitions.
+     */
+    public function markExpired(): void
+    {
+        $this->forceFill(['status' => AdStatus::EXPIRED])->save();
+
+        $this->unsearchable();
     }
 
     /**

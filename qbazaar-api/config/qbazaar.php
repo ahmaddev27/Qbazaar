@@ -18,6 +18,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Web URLs — used by mailed notifications to build deep links into the
+    | seller-facing web app. Falls back to APP_URL when WEB_URL isn't set so
+    | the contract stays predictable in dev (everything points at the API
+    | host until the FE is wired up).
+    |--------------------------------------------------------------------------
+    */
+    'web_url' => env('WEB_URL', env('APP_URL', 'http://localhost')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Locale & Currency
     |--------------------------------------------------------------------------
     */

@@ -14,9 +14,11 @@ use App\Http\Controllers\Api\V1\Account\SessionsController;
 use App\Http\Controllers\Api\V1\Account\VerificationStatusController;
 use App\Http\Controllers\Api\V1\Ads\AdController;
 use App\Http\Controllers\Api\V1\Ads\AdImageController;
+use App\Http\Controllers\Api\V1\Ads\FeaturedAdsController;
 use App\Http\Controllers\Api\V1\Ads\MarkSoldController;
 use App\Http\Controllers\Api\V1\Ads\PublishAdController;
 use App\Http\Controllers\Api\V1\Ads\RenewAdController;
+use App\Http\Controllers\Api\V1\Ads\SimilarAdsController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
@@ -241,7 +243,13 @@ Route::prefix('ads')
     ->middleware('throttle:api')
     ->group(function (): void {
         Route::get('/', [AdController::class, 'index'])->name('index');
+
+        // Static-segment routes MUST be declared before the {id} catch-all
+        // so Laravel's router doesn't match `featured` as an ad ULID.
+        Route::get('/featured', FeaturedAdsController::class)->name('featured');
+
         Route::get('/{id}', [AdController::class, 'show'])->name('show');
+        Route::get('/{id}/similar', SimilarAdsController::class)->name('similar');
     });
 
 Route::middleware(['auth:sanctum', 'active.user'])->group(function (): void {
@@ -258,7 +266,7 @@ Route::middleware(['auth:sanctum', 'active.user'])->group(function (): void {
         ->name('api.v1.ads.destroy');
 
     Route::post('/ads/{id}/publish', PublishAdController::class)
-        ->middleware('throttle:publish')
+        ->middleware(['throttle:publish', 'idempotent'])
         ->name('api.v1.ads.publish');
 
     Route::post('/ads/{id}/mark-sold', MarkSoldController::class)

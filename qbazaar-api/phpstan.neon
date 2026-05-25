@@ -32,6 +32,7 @@ parameters:
     - tests/Feature/Favorites/*
     - tests/Feature/Recents/*
     - tests/Feature/Messaging/*
+    - tests/Feature/Moderation/*
     - tests/Concerns/*
     - bootstrap/cache/*
     - storage/*

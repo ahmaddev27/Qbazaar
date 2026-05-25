@@ -34,4 +34,41 @@ return [
             'line_ignore' => 'If you did not request this export, please contact our support team immediately.',
         ],
     ],
+
+    'ad_notifications' => [
+        'approved' => [
+            'subject' => 'Your ad is now live',
+            'greeting' => 'Hello,',
+            'line_intro' => 'Your ad ":title" has been approved and is now active on QBazaar.',
+            'action' => 'View ad',
+            'line_outro' => 'Buyers can now find and message you about this listing.',
+        ],
+        'rejected' => [
+            'subject' => 'We need to review your ad',
+            'greeting' => 'Hello,',
+            'line_intro' => 'Your ad ":title" needs a few changes before it can go live.',
+            'line_reasons' => 'Reasons: :reasons',
+            'reasons' => [
+                'banned_words' => 'It contains words our policy does not allow.',
+                'phone' => 'It contains a phone number — please keep contact details in chat.',
+                'external_link' => 'It contains an external link.',
+            ],
+            'action' => 'Edit my ad',
+            'line_outro' => 'Once you update the listing, resubmit it for review.',
+        ],
+        'expiring_soon' => [
+            'subject' => 'Your ad expires in 24 hours',
+            'greeting' => 'Hello,',
+            'line_intro' => 'Your ad ":title" will expire on :expires_at.',
+            'action' => 'Renew now',
+            'line_outro' => 'Renewing keeps your listing visible for another :days days.',
+        ],
+        'expired' => [
+            'subject' => 'Your ad has expired',
+            'greeting' => 'Hello,',
+            'line_intro' => 'Your ad ":title" expired and is no longer visible in search.',
+            'action' => 'Renew ad',
+            'line_outro' => 'You can bring it back live in one click.',
+        ],
+    ],
 ];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1\Ads;
 
+use App\Events\Ads\AdRenewed;
 use App\Exceptions\DomainException;
 use App\Exceptions\ErrorCode;
 use App\Http\Controllers\Controller;
@@ -35,6 +36,8 @@ class RenewAdController extends Controller
         $this->authorize('renew', $ad);
 
         $ad->renew();
+        AdRenewed::dispatch($ad);
+
         $ad->load(['user', 'category', 'location', 'media']);
 
         return response()->json((new AdResource($ad))->toArray($request));

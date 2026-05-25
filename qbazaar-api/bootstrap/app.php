@@ -7,11 +7,14 @@ use App\Exceptions\ErrorCode;
 use App\Http\Middleware\ApiResponseWrapper;
 use App\Http\Middleware\EnsurePhoneVerified;
 use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\Idempotent;
 use App\Http\Middleware\LocaleMiddleware;
 use App\Http\Middleware\TrackClient;
+use App\Jobs\Ads\ExpireOldAdsJob;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -40,6 +43,16 @@ return Application::configure(basePath: dirname(__DIR__))
             RateLimiter::for('api', fn (Request $r) => Limit::perMinute(120)->by(optional($r->user())->id ?: $r->ip()));
         },
     )
+    ->withSchedule(function (Schedule $schedule): void {
+        // Daily 02:00 Asia/Qatar — quiet local window, runs after most
+        // sellers have stopped editing. The job is queued (`onQueue('low')`)
+        // so the schedule loop returns immediately.
+        $schedule->job(new ExpireOldAdsJob)
+            ->dailyAt('02:00')
+            ->timezone('Asia/Qatar')
+            ->name('ads.expire-old')
+            ->withoutOverlapping();
+    })
     ->withMiddleware(function (Middleware $middleware): void {
         // Aliases so route files can use 'locale', 'api.wrap', 'track.client'.
         // `active.user` and `phone.verified` must be listed AFTER `auth:sanctum`
@@ -50,6 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'track.client' => TrackClient::class,
             'active.user' => EnsureUserIsActive::class,
             'phone.verified' => EnsurePhoneVerified::class,
+            'idempotent' => Idempotent::class,
         ]);
 
         // API group — every /api/v1/* request runs through these in order

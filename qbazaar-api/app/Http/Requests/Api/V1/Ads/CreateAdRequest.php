@@ -6,8 +6,12 @@ namespace App\Http\Requests\Api\V1\Ads;
 
 use App\Enums\Condition;
 use App\Enums\PriceType;
+use App\Models\Category;
+use App\Services\Ads\CustomFieldsValidator;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Body for `POST /api/v1/ads` — create a draft ad.
@@ -72,5 +76,44 @@ class CreateAdRequest extends FormRequest
             ])],
             'custom_fields' => ['nullable', 'array'],
         ];
+    }
+
+    /**
+     * After the base rules pass, run the category-specific custom_fields
+     * schema. We hook into withValidator() so the error messages join the
+     * standard ValidationException — surfacing under VALIDATION_FAILED with
+     * `custom_fields.{key}` paths.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $v): void {
+            if ($v->errors()->isNotEmpty()) {
+                return;
+            }
+
+            $categoryId = $this->input('category_id');
+            if (! is_string($categoryId)) {
+                return;
+            }
+
+            $category = Category::query()->find($categoryId);
+            if ($category === null) {
+                return;
+            }
+
+            $submitted = $this->input('custom_fields');
+            /** @var array<string, mixed>|null $submitted */
+            $submitted = is_array($submitted) ? $submitted : null;
+
+            try {
+                app(CustomFieldsValidator::class)->validate($category, $submitted);
+            } catch (ValidationException $e) {
+                foreach ($e->errors() as $path => $errors) {
+                    foreach ($errors as $msg) {
+                        $v->errors()->add($path, $msg);
+                    }
+                }
+            }
+        });
     }
 }

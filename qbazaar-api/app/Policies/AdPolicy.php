@@ -60,13 +60,17 @@ class AdPolicy
     }
 
     /**
-     * Publish rule. Only DRAFT → ACTIVE is supported in Wave A; resubmitting
-     * a REJECTED ad will get its own gate when moderation lands.
+     * Publish rule. Owners can publish a DRAFT or re-submit a PENDING /
+     * REJECTED ad (Wave B auto-moderation feedback loop).
      */
     public function publish(User $user, Ad $ad): bool
     {
         return $user->id === $ad->user_id
-            && $ad->status === AdStatus::DRAFT;
+            && in_array($ad->status, [
+                AdStatus::DRAFT,
+                AdStatus::PENDING,
+                AdStatus::REJECTED,
+            ], true);
     }
 
     /**
