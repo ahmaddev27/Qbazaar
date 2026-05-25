@@ -120,6 +120,11 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::findOrCreate($name, 'web');
         }
 
+        // Permissions were just inserted; Spatie's in-memory cache still holds
+        // the pre-insert snapshot, so syncPermissions() below would 404. A
+        // second forget flushes the now-stale cache before the role sync.
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
         $superAdmin = Role::findOrCreate('super_admin', 'web');
         $superAdmin->syncPermissions(self::PERMISSIONS);
 
@@ -153,6 +158,9 @@ class RolesAndPermissionsSeeder extends Seeder
                 'full_name' => 'QBazaar Admin',
                 'phone' => '+97455000000',
                 'password' => Hash::make('password'),
+                'account_type' => \App\Enums\AccountType::PRIVATE_INDIVIDUAL->value,
+                'status' => \App\Enums\UserStatus::ACTIVE->value,
+                'language' => \App\Enums\Language::ARABIC->value,
                 'email_verified' => true,
                 'phone_verified' => true,
             ],
