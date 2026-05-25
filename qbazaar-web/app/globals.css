@@ -61,12 +61,12 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Typography — Inter is the single workhorse face. font-display is now
-     just heavier Inter; font-arabic still resolves to Noto Naskh Arabic
-     so RTL text has proper script support. */
+  /* Typography — Inter for Latin, Cairo for Arabic (body + headings).
+     font-display kept as an alias for back-compat and resolves to the same
+     stack as font-sans (no separate display face). */
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-display: var(--font-inter), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-arabic: var(--font-naskh), serif;
+  --font-arabic: var(--font-cairo), system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
   --font-heading: var(--font-inter);
 

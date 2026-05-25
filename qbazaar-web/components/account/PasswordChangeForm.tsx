@@ -87,24 +87,23 @@ export function PasswordChangeForm() {
         <Label htmlFor="new_password">
           {t('account.security.new_password_label')}
         </Label>
-        <div className="relative">
+        <div className="relative" dir="ltr">
           <Input
             id="new_password"
             type={showNew ? 'text' : 'password'}
             autoComplete="new-password"
-            dir="ltr"
             placeholder="••••••••"
             aria-invalid={Boolean(errors.new_password)}
             aria-describedby={
               errors.new_password ? 'new_password-error' : undefined
             }
-            className="h-10 pe-10"
+            className="h-10 pr-10"
             {...form.register('new_password')}
           />
           <button
             type="button"
             onClick={() => setShowNew((v) => !v)}
-            className="text-muted-foreground hover:text-foreground absolute end-2 top-1/2 -translate-y-1/2 rounded p-1 transition-colors"
+            className="text-muted-foreground hover:text-foreground absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 transition-colors"
             aria-label={showNew ? 'Hide password' : 'Show password'}
             tabIndex={-1}
           >
@@ -189,22 +188,21 @@ function PasswordField({
   return (
     <div className="space-y-1.5">
       <Label htmlFor={id}>{label}</Label>
-      <div className="relative">
+      <div className="relative" dir="ltr">
         <Input
           id={id}
           type={show ? 'text' : 'password'}
           autoComplete={autoComplete}
-          dir="ltr"
           placeholder="••••••••"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="h-10 pe-10"
+          className="h-10 pr-10"
           {...register}
         />
         <button
           type="button"
           onClick={onToggle}
-          className="text-muted-foreground hover:text-foreground absolute end-2 top-1/2 -translate-y-1/2 rounded p-1 transition-colors"
+          className="text-muted-foreground hover:text-foreground absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 transition-colors"
           aria-label={show ? 'Hide password' : 'Show password'}
           tabIndex={-1}
         >

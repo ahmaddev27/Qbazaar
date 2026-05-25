@@ -111,22 +111,21 @@ export function RegisterForm() {
 
       <div className="space-y-1.5">
         <Label htmlFor="password">{t('auth.register.password_label')}</Label>
-        <div className="relative">
+        <div className="relative" dir="ltr">
           <Input
             id="password"
             type={showPassword ? 'text' : 'password'}
             autoComplete="new-password"
-            dir="ltr"
             placeholder={t('auth.register.password_placeholder')}
             aria-invalid={Boolean(errors.password)}
             aria-describedby={errors.password ? 'password-error' : undefined}
-            className="h-10 pe-10"
+            className="h-10 pr-10"
             {...form.register('password')}
           />
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="text-muted-foreground hover:text-foreground absolute end-2 top-1/2 -translate-y-1/2 rounded p-1 transition-colors"
+            className="text-muted-foreground hover:text-foreground absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 transition-colors"
             aria-label={showPassword ? 'Hide password' : 'Show password'}
             tabIndex={-1}
           >

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Noto_Naskh_Arabic, Geist_Mono } from 'next/font/google';
+import { Cairo, Inter, Geist_Mono } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
 import { SiteHeaderGate } from '@/components/layout/SiteHeader';
@@ -12,10 +12,11 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-const notoNaskh = Noto_Naskh_Arabic({
+// Cairo for all Arabic text (body + headings). User preference.
+const cairo = Cairo({
   subsets: ['arabic'],
-  weight: ['400', '500', '700'],
-  variable: '--font-naskh',
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-cairo',
 });
 
 const geistMono = Geist_Mono({
@@ -39,7 +40,7 @@ export default function RootLayout({
       lang="ar"
       dir="rtl"
       suppressHydrationWarning
-      className={`${inter.variable} ${notoNaskh.variable} ${geistMono.variable}`}
+      className={`${inter.variable} ${cairo.variable} ${geistMono.variable}`}
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
