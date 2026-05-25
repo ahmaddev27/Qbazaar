@@ -13,6 +13,10 @@
     "edit": "تعديل",
     "submit": "إرسال",
     "or": "أو",
+    "theme": {
+      "switch_to_dark": "الوضع الليلي",
+      "switch_to_light": "الوضع النهاري"
+    },
     "min": "الأدنى",
     "max": "الأعلى",
     "filters": "الفلاتر",
@@ -756,6 +760,44 @@
       "conversation_own_ad": "لا يمكنك بدء محادثة على إعلانك",
       "message_not_found": "لم نعثر على الرسالة",
       "send_failed": "تعذّر إرسال الرسالة، حاول مرة أخرى"
+    },
+    "offer": {
+      "make": "اعرض سعر",
+      "dialog_description": "اقترح سعراً مناسباً، وسيقوم البائع بقبوله أو رفضه.",
+      "amount_label": "المبلغ (ر.ق)",
+      "amount_placeholder": "مثلاً: 1500",
+      "note_label": "ملاحظة (اختياري)",
+      "note_placeholder": "أضف ملاحظة موجزة للبائع…",
+      "submit": "إرسال العرض",
+      "cancel": "إلغاء",
+      "success_toast": "تم إرسال العرض بنجاح",
+      "accept": "قبول",
+      "reject": "رفض",
+      "withdraw": "سحب العرض",
+      "withdraw_confirm": {
+        "title": "سحب العرض؟",
+        "body": "لن يتمكن البائع من قبول هذا العرض بعد سحبه.",
+        "confirm": "تأكيد السحب"
+      },
+      "status": {
+        "pending": "قيد المراجعة",
+        "accepted": "تم القبول",
+        "rejected": "مرفوض",
+        "withdrawn": "تم السحب",
+        "expired": "منتهي"
+      },
+      "expires_in_hours": "تنتهي خلال {hours} ساعات",
+      "terminal_message": "{status} {when}",
+      "errors": {
+        "not_found": "لم نعثر على العرض",
+        "active_exists": "لديك عرض مفتوح بالفعل لهذا الإعلان",
+        "own_ad": "لا يمكنك تقديم عرض على إعلانك",
+        "ad_not_active": "الإعلان لم يعد متاحاً لاستقبال العروض",
+        "not_pending": "لم يعد بإمكان تعديل هذا العرض",
+        "forbidden": "لا تملك صلاحية تنفيذ هذا الإجراء",
+        "amount_required": "أدخل مبلغاً صحيحاً أكبر من صفر",
+        "note_max": "الملاحظة طويلة جداً"
+      }
     }
   }
 }

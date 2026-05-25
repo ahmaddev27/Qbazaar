@@ -126,7 +126,7 @@
 - [x] `CT-0.1` 🟡 إنشاء `qbazaar-contracts` repo + git init + README ✅ commit `61a4d15`
 - [x] `CT-0.2` 🟡 نقل ROADMAP.md و MILESTONES.md و PLAN.md إلى `qbazaar-contracts/` ✅ commit `2d1703d`
 - [x] `CT-0.3` 🟡 إنشاء `openapi/v1.yaml` skeleton + `error-codes.md` + `events/` folder ✅ commit `898644d`
-- [ ] `INT-0.1` 🟢 GitHub repos creation (private) + push initial commits — *مؤجل لآخر Sprint 0*
+- [x] `INT-0.1` 🟢 GitHub repo creation + push — closed via monorepo consolidation: `github.com/Qbazzar/Qbazaar` (Sprint 0 Day 7) ✅
 
 #### Day 2 — Laravel Bootstrap
 - [x] `BE-0.2` 🔵 `composer create-project laravel/laravel . "^12.0"` (Laravel 13 لسا ما طلع) ✅ commit `5a6333e`
@@ -176,17 +176,17 @@
 - [ ] `FE-0.10` 🟣 `middleware.ts` next-intl i18n routing — *مؤجل لـ Sprint 1 مع Auth pages*
 - [x] `FE-0.11` 🟣 `i18n/ar.json` + `i18n/en.json` بـ brand + common keys ✅ commit `88159e4`
 - [x] `FE-0.12` 🟣 `lib/api/client.ts` axios instance (interceptors في Sprint 1) ✅ commit `88159e4`
-- [ ] `FE-0.13` 🟣 `components/ui/logo.tsx` + `theme-toggle.tsx` — *مؤجل لـ Sprint 1*
+- [x] `FE-0.13` 🟣 `components/ui/logo.tsx` (image-based brand mark) + `components/theme-toggle.tsx` wired into SiteHeader ✅ commit (current)
 - [x] `FE-0.14` 🟣 Home placeholder بـ Instrument Serif italic + شعار + Bazzar tokens ✅ commit `88159e4` — `npm run build` ✅
 
 #### Day 7 — Mock + Workflow + Sprint 1 Planning
 - [x] `CT-0.4` 🟡 `npm install` في contracts (Prism + Redocly 383 deps) ✅ commit `b507170`
 - [x] `CT-0.5` 🟡 OpenAPI skeleton: info + servers + base schemas (User, Ad, Category, Error) ✅ baseline `71216d3`
-- [ ] `CT-0.6` 🟡 Auth endpoints في v1.yaml مع examples — *مرحّل لبداية Sprint 1 (contract-first قبل أي auth code)*
+- [x] `CT-0.6` 🟡 Auth endpoints في v1.yaml مع examples — 11 paths shipped with Sprint 1 (`/api/v1/auth/{register,login,logout,refresh,send-otp,verify-otp,resend-otp,forgot-password,reset-password,send-email-verification,verify-email}`) ✅
 - [x] `CT-0.7` 🟡 Components/responses/Error موحّد ✅ baseline `71216d3`
 - [x] `FE-0.15` 🟣 `.env.example` للـ web ينقل NEXT_PUBLIC_API_URL → Prism (4010) ✅ commit (current)
-- [ ] `INT-0.2` 🟢 GitHub Project + 13 Milestones + Labels — *manual user step (gh CLI غير مثبت)*
-- [ ] `INT-0.3` 🟢 Issues لـ Sprint 1 — *manual user step بعد إنشاء الـ project*
+- [~] `INT-0.2` 🟢 GitHub Project + Milestones + Labels — *out-of-MVP: tracking lives in MILESTONES.md + ROADMAP.md; create via GitHub UI post-launch if team grows*
+- [~] `INT-0.3` 🟢 Issues لـ Sprint 1 — *out-of-MVP: Sprint 1 shipped via task IDs in MILESTONES.md, retroactive GitHub Issues add no value*
 - [x] `INT-0.4` 🟢 Sprint 0 Retro في `ROADMAP.md` ✅ commit (current)
 
 ---

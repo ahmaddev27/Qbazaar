@@ -23,6 +23,8 @@ import {
   XIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { SearchBar } from '@/components/search/SearchBar';
 import { MessagesBadge } from '@/components/messaging/MessagesBadge';
 import { cn } from '@/lib/utils';
@@ -60,11 +62,8 @@ export function SiteHeader() {
     <header className="border-ink-200 bg-card/95 supports-[backdrop-filter]:bg-card/70 sticky top-0 z-30 border-b backdrop-blur">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
         {/* Brand */}
-        <Link
-          href="/"
-          className="text-coral font-display flex shrink-0 items-center gap-2 text-xl"
-        >
-          <span>{t('brand.name', 'QBazaar')}</span>
+        <Link href="/" className="shrink-0" aria-label={t('brand.name', 'QBazaar')}>
+          <Logo />
         </Link>
 
         {/* Desktop nav */}
@@ -117,6 +116,9 @@ export function SiteHeader() {
               {t('home.hero.cta_post', 'انشر إعلانك')}
             </Link>
           </Button>
+
+          {/* Theme switcher */}
+          <ThemeToggle />
 
           {/* Messages badge — auto-hides when signed out or count is 0 */}
           <MessagesBadge />

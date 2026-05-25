@@ -16,7 +16,11 @@
     "min": "Min",
     "max": "Max",
     "filters": "Filters",
-    "view_all": "View all"
+    "view_all": "View all",
+    "theme": {
+      "switch_to_dark": "Dark mode",
+      "switch_to_light": "Light mode"
+    }
   },
   "auth": {
     "hero": {
@@ -756,6 +760,44 @@
       "conversation_own_ad": "You can't message yourself about your own ad",
       "message_not_found": "Message not found",
       "send_failed": "Couldn't send the message, please retry"
+    },
+    "offer": {
+      "make": "Make an offer",
+      "dialog_description": "Propose a fair price — the seller can accept or reject it.",
+      "amount_label": "Amount (QAR)",
+      "amount_placeholder": "e.g. 1500",
+      "note_label": "Note (optional)",
+      "note_placeholder": "Add a short note for the seller…",
+      "submit": "Send offer",
+      "cancel": "Cancel",
+      "success_toast": "Offer sent",
+      "accept": "Accept",
+      "reject": "Reject",
+      "withdraw": "Withdraw offer",
+      "withdraw_confirm": {
+        "title": "Withdraw the offer?",
+        "body": "Once withdrawn the seller can no longer accept it.",
+        "confirm": "Confirm withdrawal"
+      },
+      "status": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "withdrawn": "Withdrawn",
+        "expired": "Expired"
+      },
+      "expires_in_hours": "Expires in {hours}h",
+      "terminal_message": "{status} {when}",
+      "errors": {
+        "not_found": "Offer not found",
+        "active_exists": "You already have an open offer on this ad",
+        "own_ad": "You can't make an offer on your own ad",
+        "ad_not_active": "This ad is no longer accepting offers",
+        "not_pending": "This offer can no longer be changed",
+        "forbidden": "You don't have permission to do that",
+        "amount_required": "Enter a valid amount greater than zero",
+        "note_max": "Note is too long"
+      }
     }
   }
 }
