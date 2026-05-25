@@ -6,12 +6,12 @@ use App\Providers\AppServiceProvider;
 use App\Providers\AuthServiceProvider;
 use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\HorizonServiceProvider;
-use App\Providers\TelescopeServiceProvider;
 
 return [
     AppServiceProvider::class,
     AuthServiceProvider::class,
     AdminPanelProvider::class,
     HorizonServiceProvider::class,
-    TelescopeServiceProvider::class,
+    // TelescopeServiceProvider is registered conditionally in AppServiceProvider
+    // so production deploys with --no-dev don't fail on a missing class.
 ];

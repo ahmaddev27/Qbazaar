@@ -34,6 +34,14 @@ class AppServiceProvider extends ServiceProvider
         // a singleton avoids re-parsing the banned-words array on every
         // publish call within a single worker process.
         $this->app->singleton(ModerationRulesService::class);
+
+        // Telescope is installed as a dev dependency, so its classes only
+        // exist when composer ran without --no-dev. Guard the registration so
+        // production deploys (composer install --no-dev) don't blow up.
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     /**
