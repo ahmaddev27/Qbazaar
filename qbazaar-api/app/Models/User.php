@@ -13,6 +13,7 @@ use App\Notifications\EmailVerificationNotification;
 use App\Notifications\PasswordResetNotification;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
@@ -49,7 +50,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon $updated_at
  * @property Carbon|null $deleted_at
  */
-class User extends Authenticatable implements CanResetPasswordContract, FilamentUser, HasMedia, MustVerifyEmailContract
+class User extends Authenticatable implements CanResetPasswordContract, FilamentUser, HasMedia, HasName, MustVerifyEmailContract
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, HasUlids, InteractsWithMedia, Notifiable, SoftDeletes;
