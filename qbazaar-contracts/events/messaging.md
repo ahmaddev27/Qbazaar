@@ -91,6 +91,73 @@ Fired when `POST /conversations/{id}/read` actually marks anything
 Clients should update their per-bubble "delivered" → "read" markers for
 every message in this conversation older than `read_at`.
 
+### `offer.created`
+
+Fired when `POST /conversations/{id}/offers` succeeds (Sprint 9).
+
+- Channels:
+  - `private-conversation.{conversationId}` — both participants flip the chat to show the inline offer card.
+  - `private-user.{otherUserId}` — the seller (recipient) updates their inbox row + header badge when the thread isn't open.
+- Payload:
+
+```json
+{
+  "offer": {
+    "id": "01HMxx...",
+    "conversation_id": "01HMxx...",
+    "ad_id": "01HMxx...",
+    "buyer_id": "01HMxx...",
+    "seller_id": "01HMxx...",
+    "message_id": "01HMxx...",
+    "amount": "1500.00",
+    "currency": "QAR",
+    "note": "Can we meet halfway?",
+    "status": "pending",
+    "expires_at": "2026-06-01T00:00:00+00:00",
+    "accepted_at": null,
+    "rejected_at": null,
+    "withdrawn_at": null,
+    "created_at": "2026-05-25T09:00:00+00:00",
+    "viewer_role": null
+  },
+  "conversation_id": "01HMxx..."
+}
+```
+
+`viewer_role` is `null` on the broadcast path — clients re-derive it
+from their own session (`buyer` if user.id === offer.buyer_id, otherwise
+`seller`).
+
+### `offer.accepted`
+
+Fired after `POST /offers/{id}/accept` commits.
+
+- Channels: `private-conversation.{conversationId}` + `private-user.{buyerId}`.
+- Payload: identical shape to `offer.created`; `status` flips to `accepted`,
+  `accepted_at` populated.
+
+### `offer.rejected`
+
+Fired after `POST /offers/{id}/reject` commits.
+
+- Channels: `private-conversation.{conversationId}` + `private-user.{buyerId}`.
+- Payload: `status` = `rejected`, `rejected_at` populated.
+
+### `offer.withdrawn`
+
+Fired after `POST /offers/{id}/withdraw` commits.
+
+- Channels: `private-conversation.{conversationId}` + `private-user.{sellerId}`.
+- Payload: `status` = `withdrawn`, `withdrawn_at` populated.
+
+### `offer.expired`
+
+Server-side only — dispatched by `ExpireOldOffersJob` (daily 02:30 Asia/Qatar)
+when a pending offer's `expires_at` has passed.
+
+- Channels: `private-conversation.{conversationId}` + `private-user.{buyerId}`.
+- Payload: `status` = `expired`.
+
 ## Client behaviour notes
 
 - WebSocket delivery is best-effort. On reconnect, fetch missed traffic

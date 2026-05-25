@@ -1909,6 +1909,308 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
 
+  # ───────────────────────────────────────────────────────────────────
+  # Offers (Sprint 9) — buyer-side price proposals anchored to a chat
+  # ───────────────────────────────────────────────────────────────────
+  /api/v1/conversations/{id}/offers:
+    post:
+      tags: [Offers]
+      summary: Make an offer on the ad referenced by this conversation
+      description: |
+        Creates a pending offer plus a `type=offer` chat message that
+        introduces it in the transcript. The buyer can only have ONE
+        pending offer per ad (OFFER_ACTIVE_EXISTS otherwise).
+      operationId: offersStore
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MakeOfferRequest'
+      responses:
+        '201':
+          description: Offer created and broadcast
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: MSG_BLOCKED — one side has blocked the other
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422':
+          description: |
+            VALIDATION_FAILED, OFFER_OWN_AD, OFFER_AD_NOT_ACTIVE, or
+            OFFER_ACTIVE_EXISTS — see error-codes.md.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    get:
+      tags: [Offers]
+      summary: List offers in this conversation (newest first)
+      operationId: offersIndex
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '200':
+          description: All offers attached to this conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferListEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/offers/{id}/accept:
+    post:
+      tags: [Offers]
+      summary: Seller accepts a pending offer
+      description: |
+        Flips status to `accepted`, sibling pending offers from the same
+        buyer/ad pair get withdrawn (defence-in-depth), drops an inline
+        "Offer accepted" system message in the chat.
+      operationId: offersAccept
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '200':
+          description: Offer accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422':
+          description: OFFER_NOT_PENDING — offer is already terminal or expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/offers/{id}/reject:
+    post:
+      tags: [Offers]
+      summary: Seller rejects a pending offer
+      operationId: offersReject
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '200':
+          description: Offer rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422':
+          description: OFFER_NOT_PENDING
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/offers/{id}/withdraw:
+    post:
+      tags: [Offers]
+      summary: Buyer withdraws their own pending offer
+      operationId: offersWithdraw
+      parameters:
+        - { name: id, in: path, required: true, schema: { $ref: '#/components/schemas/ULID' } }
+      responses:
+        '200':
+          description: Offer withdrawn
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422':
+          description: OFFER_NOT_PENDING
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Reports (Sprint 10)
+  # ──────────────────────────────────────────────────────────────────────────
+  /api/v1/reports:
+    post:
+      tags: [Reports]
+      summary: File an abuse report
+      description: |
+        Submits a moderation report against an ad, user, conversation, or
+        message. The reporter may file at most one report per (target, 7-day
+        window). A self-report against the caller's own user_id is refused.
+
+        Admin-side listing and resolution lives in the Filament admin app
+        (Sprint 11) and is intentionally not exposed in this public API.
+      operationId: reportsCreate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MakeReportRequest'
+            examples:
+              ad_spam:
+                value:
+                  target_type: ad
+                  target_id: 01HM3XQVZP5KJWQR2K8N0DJSAW
+                  category: spam
+                  description: Looks like a fake listing — phone number is invalid.
+      responses:
+        '201':
+          description: Report accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422':
+          description: REPORT_SELF_FORBIDDEN / REPORT_INVALID_TARGET / VALIDATION_FAILED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '429':
+          description: REPORT_DUPLICATE — already reported this target within the duplicate-window (7 days default)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Notifications inbox (Sprint 10)
+  # ──────────────────────────────────────────────────────────────────────────
+  /api/v1/account/notifications:
+    get:
+      tags: [Notifications]
+      summary: List in-app notifications
+      description: |
+        Paginated 20/page, newest first. Pass `?unread=1` to filter to unread
+        only. Notifications are scoped to the calling user.
+      operationId: notificationsIndex
+      parameters:
+        - in: query
+          name: unread
+          schema:
+            type: integer
+            enum: [0, 1]
+          required: false
+          description: When `1`, returns only unread notifications.
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: Notifications list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationListEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/account/notifications/unread-count:
+    get:
+      tags: [Notifications]
+      summary: Count unread notifications
+      description: Drives the bell-icon badge.
+      operationId: notificationsUnreadCount
+      responses:
+        '200':
+          description: Unread count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnreadCountEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/account/notifications/read-all:
+    post:
+      tags: [Notifications]
+      summary: Mark every unread notification as read
+      operationId: notificationsMarkAllRead
+      responses:
+        '200':
+          description: Marked count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarkedCountEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/account/notifications/{id}/read:
+    post:
+      tags: [Notifications]
+      summary: Mark a single notification as read
+      operationId: notificationsMarkRead
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Updated notification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationEnvelope'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: NOTIF_FORBIDDEN — notification belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: NOTIF_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/account/notifications/{id}:
+    delete:
+      tags: [Notifications]
+      summary: Remove a notification from the inbox
+      operationId: notificationsDestroy
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204':
+          description: Notification deleted
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: NOTIF_FORBIDDEN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: NOTIF_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
 components:
   schemas:
     # ─── Envelopes ──────────────────────────────────────────────────
@@ -3159,6 +3461,14 @@ components:
             id: { $ref: '#/components/schemas/ULID' }
             full_name: { type: string }
             avatar_thumb: { type: string, format: uri, nullable: true }
+        offer:
+          allOf:
+            - $ref: '#/components/schemas/Offer'
+          nullable: true
+          description: |
+            Only present when `type === "offer"` AND the server eager-loads
+            the relation (every Sprint 9 endpoint does; broadcast frames
+            omit it to keep the WebSocket payload small).
 
     StartConversationRequest:
       type: object
@@ -3248,6 +3558,241 @@ components:
         - type: object
           properties:
             data: { $ref: '#/components/schemas/MarkReadResponse' }
+
+    # ─── Offers (Sprint 9) ─────────────────────────────────────────
+    OfferStatus:
+      type: string
+      enum: [pending, accepted, rejected, withdrawn, expired]
+      description: |
+        Lifecycle state. `pending` is the only non-terminal value; every
+        other state freezes the row permanently.
+
+    Offer:
+      type: object
+      required:
+        - id
+        - conversation_id
+        - ad_id
+        - buyer_id
+        - seller_id
+        - amount
+        - currency
+        - status
+        - expires_at
+        - created_at
+      properties:
+        id: { $ref: '#/components/schemas/ULID' }
+        conversation_id: { $ref: '#/components/schemas/ULID' }
+        ad_id: { $ref: '#/components/schemas/ULID' }
+        buyer_id: { $ref: '#/components/schemas/ULID' }
+        seller_id: { $ref: '#/components/schemas/ULID' }
+        message_id:
+          allOf:
+            - $ref: '#/components/schemas/ULID'
+          nullable: true
+          description: The chat bubble that introduced the offer; nullable if the message was later removed by moderation.
+        amount:
+          type: string
+          description: Decimal string with two places, e.g. "1500.00"
+          example: "1500.00"
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: QAR
+        note:
+          type: string
+          nullable: true
+          maxLength: 280
+        status: { $ref: '#/components/schemas/OfferStatus' }
+        expires_at: { type: string, format: date-time }
+        accepted_at: { type: string, format: date-time, nullable: true }
+        rejected_at: { type: string, format: date-time, nullable: true }
+        withdrawn_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+        viewer_role:
+          type: string
+          nullable: true
+          enum: [buyer, seller]
+          description: |
+            Computed from the request user. `null` on the broadcast
+            payload (no request context) — clients re-derive it from
+            their session in that case.
+
+    MakeOfferRequest:
+      type: object
+      required: [amount]
+      properties:
+        amount:
+          type: number
+          minimum: 1
+          maximum: 99999999
+          description: Offered price in the conversation's currency (QAR for MVP).
+        note:
+          type: string
+          maxLength: 280
+          nullable: true
+
+    OfferEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/Offer' }
+
+    OfferListEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/Offer' }
+
+    # ─── Reports (Sprint 10) ────────────────────────────────────────
+    ReportTarget:
+      type: string
+      enum: [ad, user, conversation, message]
+
+    ReportCategory:
+      type: string
+      enum:
+        - spam
+        - fraud
+        - inappropriate
+        - offensive
+        - duplicate
+        - wrong_category
+        - other
+
+    ReportStatus:
+      type: string
+      enum: [pending, reviewed, dismissed, actioned]
+
+    MakeReportRequest:
+      type: object
+      required: [target_type, target_id, category]
+      properties:
+        target_type: { $ref: '#/components/schemas/ReportTarget' }
+        target_id:   { $ref: '#/components/schemas/ULID' }
+        category:    { $ref: '#/components/schemas/ReportCategory' }
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+          description: Optional free-text context for the moderator.
+
+    Report:
+      type: object
+      required: [id, target_type, target_id, category, status, created_at]
+      properties:
+        id: { $ref: '#/components/schemas/ULID' }
+        target_type: { $ref: '#/components/schemas/ReportTarget' }
+        target_id:   { $ref: '#/components/schemas/ULID' }
+        category:    { $ref: '#/components/schemas/ReportCategory' }
+        category_label:
+          type: object
+          required: [ar, en]
+          properties:
+            ar: { type: string }
+            en: { type: string }
+        description:
+          type: string
+          nullable: true
+        status: { $ref: '#/components/schemas/ReportStatus' }
+        created_at:
+          type: string
+          format: date-time
+
+    ReportEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/Report' }
+
+    # ─── Notifications (Sprint 10) ──────────────────────────────────
+    Notification:
+      type: object
+      required: [id, type, read_at, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Notification UUID (Laravel-generated, distinct from our ULID PKs).
+        type:
+          type: string
+          description: FQCN of the notification class (e.g. App\Notifications\Ads\AdApprovedNotification).
+          example: App\Notifications\Ads\AdApprovedNotification
+        category:
+          type: string
+          nullable: true
+          description: Short discriminator surfaced from the notification's data payload (e.g. ad.approved, account.data_export_ready).
+          example: ad.approved
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+          nullable: true
+        cta_url:
+          type: string
+          format: uri
+          nullable: true
+        icon:
+          type: string
+          nullable: true
+          description: lucide icon name the FE should render.
+        data:
+          type: object
+          additionalProperties: true
+          description: Full payload as persisted on the database channel. Treat unknown keys as forward-compatible.
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    NotificationEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/Notification' }
+
+    NotificationListEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/Notification' }
+            meta: { $ref: '#/components/schemas/PaginationMeta' }
+
+    UnreadCountEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              required: [total]
+              properties:
+                total: { type: integer, minimum: 0 }
+
+    MarkedCountEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/SuccessEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              required: [marked]
+              properties:
+                marked: { type: integer, minimum: 0 }
 
   responses:
     Unauthorized:

@@ -98,13 +98,19 @@ requested locale.
 | `OFFER_002` | Offer expired | 410 |
 | `OFFER_003` | Offer already actioned (accepted / rejected) | 422 |
 | `OFFER_004` | Only the seller can accept / reject | 403 |
+| `OFFER_005` | Buyer already has a pending offer on this ad | 422 |
+| `OFFER_006` | Cannot make an offer on your own ad | 422 |
+| `OFFER_007` | Ad must be active to receive an offer | 422 |
+| `OFFER_008` | Offer is not in a pending state | 422 |
+| `OFFER_009` | Not authorised to act on this offer | 403 |
 
 ## Reports (Sprint 10)
 
 | Code | Meaning | HTTP |
 |------|---------|------|
 | `REPORT_001` | Cannot report yourself | 422 |
-| `REPORT_002` | Already reported this target recently | 422 |
+| `REPORT_002` | Already reported this target within the duplicate-window (7 days default) | 429 |
+| `REPORT_003` | The target_type/target_id pair does not resolve to an existing record | 422 |
 
 ## Notifications (Sprint 10)
 
@@ -112,6 +118,7 @@ requested locale.
 |------|---------|------|
 | `NOTIF_001` | Notification not found | 404 |
 | `NOTIF_002` | Device token invalid | 422 |
+| `NOTIF_003` | Notification exists but belongs to another user | 403 |
 
 ## CMS & Support (Sprint 12)
 

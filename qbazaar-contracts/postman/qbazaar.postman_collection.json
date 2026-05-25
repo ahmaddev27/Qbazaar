@@ -1235,6 +1235,207 @@
           }
         }
       ]
+    },
+    {
+      "name": "Offers",
+      "description": "Sprint 9 — buyer-side price offers attached to a conversation",
+      "item": [
+        {
+          "name": "POST /conversations/{id}/offers",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1500,\n  \"note\": \"Can we meet halfway?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/conversations/{{conversation_id}}/offers",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["conversations", "{{conversation_id}}", "offers"]
+            }
+          }
+        },
+        {
+          "name": "GET /conversations/{id}/offers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/conversations/{{conversation_id}}/offers",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["conversations", "{{conversation_id}}", "offers"]
+            }
+          }
+        },
+        {
+          "name": "POST /offers/{id}/accept",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/offers/{{offer_id}}/accept",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["offers", "{{offer_id}}", "accept"]
+            }
+          }
+        },
+        {
+          "name": "POST /offers/{id}/reject",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/offers/{{offer_id}}/reject",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["offers", "{{offer_id}}", "reject"]
+            }
+          }
+        },
+        {
+          "name": "POST /offers/{id}/withdraw",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/offers/{{offer_id}}/withdraw",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["offers", "{{offer_id}}", "withdraw"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "description": "Sprint 10 — in-app notifications inbox (database channel + real-time `notification.created` broadcast on `private-user.{userId}`).",
+      "item": [
+        {
+          "name": "GET /account/notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/notifications?unread=0",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "notifications"],
+              "query": [
+                { "key": "unread", "value": "0", "description": "Pass 1 to filter to unread only" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /account/notifications/unread-count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/notifications/unread-count",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "notifications", "unread-count"]
+            }
+          }
+        },
+        {
+          "name": "POST /account/notifications/read-all",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/notifications/read-all",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "notifications", "read-all"]
+            }
+          }
+        },
+        {
+          "name": "POST /account/notifications/{id}/read",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/notifications/{{notification_id}}/read",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "notifications", "{{notification_id}}", "read"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /account/notifications/{id}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/account/notifications/{{notification_id}}",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["account", "notifications", "{{notification_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "description": "Sprint 10 — abuse reports against ads / users / conversations / messages. Admin queue lives in Filament (Sprint 11) and is intentionally not surfaced in the public API.",
+      "item": [
+        {
+          "name": "POST /reports (ad)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target_type\": \"ad\",\n  \"target_id\": \"{{ad_id}}\",\n  \"category\": \"spam\",\n  \"description\": \"Looks like a fake listing.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/reports",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["reports"]
+            }
+          }
+        },
+        {
+          "name": "POST /reports (user)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target_type\": \"user\",\n  \"target_id\": \"{{user_id}}\",\n  \"category\": \"offensive\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/reports",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["reports"]
+            }
+          }
+        },
+        {
+          "name": "POST /reports (message)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"target_type\": \"message\",\n  \"target_id\": \"{{message_id}}\",\n  \"category\": \"inappropriate\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/reports",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["reports"]
+            }
+          }
+        }
+      ]
     }
   ]
 }
