@@ -755,3 +755,65 @@ export type OfferErrorCode =
   | 'OFFER_AD_NOT_ACTIVE'
   | 'OFFER_NOT_PENDING'
   | 'OFFER_FORBIDDEN';
+
+// ── Notifications (Sprint 10) ──────────────────────────────────────────────
+// The notifications center reuses the standard Laravel notifications table:
+// every row carries the polymorphic `type` (FQCN) plus a stable `category`
+// slug the UI can switch on. `cta_url` is the link to click when the row is
+// pressed; `icon` is a lucide name resolved via DynamicIcon.
+
+export interface Notification {
+  id: string;
+  type: string;
+  category: string;
+  title: string;
+  body: string;
+  cta_url: string | null;
+  icon: string | null;
+  read_at: string | null;
+  created_at: string;
+}
+
+export type NotificationErrorCode =
+  | 'NOTIFICATION_NOT_FOUND'
+  | 'NOTIFICATION_FORBIDDEN';
+
+// ── Reports (Sprint 10) ────────────────────────────────────────────────────
+// User-initiated abuse reports against an ad, user, conversation or message.
+// `category` is a stable slug rendered as a radio group in ReportDialog. The
+// backend rate-limits duplicate reports per target/category.
+
+export type ReportTarget = 'ad' | 'user' | 'conversation' | 'message';
+
+export type ReportCategory =
+  | 'spam'
+  | 'fraud'
+  | 'inappropriate'
+  | 'offensive'
+  | 'duplicate'
+  | 'wrong_category'
+  | 'other';
+
+export type ReportStatus = 'pending' | 'reviewed' | 'dismissed' | 'actioned';
+
+export interface Report {
+  id: string;
+  target_type: ReportTarget;
+  target_id: string;
+  category: ReportCategory;
+  description: string | null;
+  status: ReportStatus;
+  created_at: string;
+}
+
+export interface MakeReportRequest {
+  target_type: ReportTarget;
+  target_id: string;
+  category: ReportCategory;
+  description?: string;
+}
+
+export type ReportErrorCode =
+  | 'REPORT_INVALID_TARGET'
+  | 'REPORT_SELF'
+  | 'REPORT_RECENT_DUPLICATE';

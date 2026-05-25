@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import {
+  BellIcon,
   BookmarkIcon,
   ClockIcon,
   DatabaseIcon,
@@ -68,6 +69,11 @@ const NAV_ITEMS: NavItem[] = [
     href: '/account/messages',
     labelKey: 'account.nav.messages',
     icon: MessageSquareIcon,
+  },
+  {
+    href: '/account/notifications',
+    labelKey: 'account.nav.notifications',
+    icon: BellIcon,
   },
   {
     href: '/account/favorites',

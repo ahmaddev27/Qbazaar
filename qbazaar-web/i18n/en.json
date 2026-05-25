@@ -205,6 +205,7 @@
       "recently_viewed": "Recently viewed",
       "saved_searches": "Saved searches",
       "messages": "Messages",
+      "notifications": "Notifications",
       "sign_out": "Sign out",
       "sign_out_confirm": "Signed out"
     },
@@ -798,6 +799,86 @@
         "amount_required": "Enter a valid amount greater than zero",
         "note_max": "Note is too long"
       }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "header_label": "Notifications",
+    "tabs": {
+      "all": "All",
+      "unread": "Unread"
+    },
+    "empty": {
+      "all": "No notifications yet",
+      "unread": "You're all caught up"
+    },
+    "mark_all_read": "Mark all as read",
+    "view_all": "View all notifications",
+    "delete": "Delete",
+    "delete_confirm": {
+      "title": "Delete this notification?",
+      "body": "This action can't be undone.",
+      "confirm": "Delete"
+    },
+    "relative": {
+      "just_now": "just now",
+      "minutes_ago": "{n}m ago",
+      "hours_ago": "{n}h ago",
+      "days_ago": "{n}d ago"
+    },
+    "errors": {
+      "not_found": "Notification not found",
+      "forbidden": "You don't have access to this notification"
+    }
+  },
+  "reports": {
+    "title": "Report",
+    "dialog": {
+      "title": "Report inappropriate content",
+      "description": "Help us keep QBazaar safe. Our team will review your report."
+    },
+    "category_label": "Reason",
+    "description_label": "Additional details (optional)",
+    "description_placeholder": "Add any context that helps us review the report.",
+    "submit": "Submit report",
+    "cancel": "Cancel",
+    "categories": {
+      "spam": {
+        "label": "Spam",
+        "hint": "Repeated listings or unwanted promotion."
+      },
+      "fraud": {
+        "label": "Fraud",
+        "hint": "Attempted scam or misleading listing."
+      },
+      "inappropriate": {
+        "label": "Inappropriate content",
+        "hint": "Images or text that don't belong here."
+      },
+      "offensive": {
+        "label": "Offensive content",
+        "hint": "Hateful language or harassment."
+      },
+      "duplicate": {
+        "label": "Duplicate listing",
+        "hint": "The same ad posted more than once."
+      },
+      "wrong_category": {
+        "label": "Wrong category",
+        "hint": "Listed under the wrong section."
+      },
+      "other": {
+        "label": "Other",
+        "hint": "Tell us what's wrong in the details box."
+      }
+    },
+    "success_toast": "Report submitted",
+    "errors": {
+      "invalid_target": "This item can't be reported",
+      "self": "You can't report yourself",
+      "recent_duplicate": "Already reported",
+      "category_required": "Pick a reason",
+      "description_max": "Description is too long"
     }
   }
 }

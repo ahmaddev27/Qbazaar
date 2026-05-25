@@ -12,13 +12,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import {
-  ChevronLeft,
-  Flag,
-  Phone,
-  Share2,
-  ShieldCheck,
-} from 'lucide-react';
+import { ChevronLeft, Phone, Share2, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -30,6 +24,7 @@ import { CustomFieldsList } from '@/components/ads/CustomFieldsList';
 import { FavoriteButton } from '@/components/ads/FavoriteButton';
 import { PriceTag } from '@/components/ads/PriceTag';
 import { StartConversationButton } from '@/components/messaging/StartConversationButton';
+import { ReportButton } from '@/components/reports/ReportButton';
 import { useAdQuery } from '@/lib/queries/ads';
 import { useTrackAdViewMutation } from '@/lib/queries/recently-viewed';
 import { localized, getLocale } from '@/lib/i18n/locale';
@@ -309,15 +304,13 @@ function AdDetail({
                 </div>
               </div>
 
-              <div className="border-ink-200 mt-4 flex items-center justify-between border-t pt-3 text-xs">
-                <button
-                  type="button"
-                  className="text-ink-500 inline-flex items-center gap-1.5"
-                  title={t('ads.actions.report_soon', 'الإبلاغ متاح قريباً')}
-                >
-                  <Flag className="size-3" />
-                  {t('ads.actions.report', 'إبلاغ')}
-                </button>
+              <div className="border-ink-200 mt-4 flex items-center justify-end border-t pt-3 text-xs">
+                <ReportButton
+                  target_type="ad"
+                  target_id={ad.id}
+                  variant="ghost"
+                  className="text-ink-500 hover:text-coral inline-flex items-center gap-1.5 rounded-full"
+                />
               </div>
             </Card>
 

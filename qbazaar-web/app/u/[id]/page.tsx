@@ -37,6 +37,7 @@ import {
   TabsContent,
 } from '@/components/ui/tabs';
 import { BlockUserButton } from '@/components/users/BlockUserButton';
+import { ReportButton } from '@/components/reports/ReportButton';
 import { t } from '@/lib/i18n/messages';
 import { formatMonthYear } from '@/lib/utils';
 import { getPublicProfile, getUserAds } from '@/lib/api/users';
@@ -123,9 +124,6 @@ export default function PublicProfilePage({ params }: PageProps) {
           onPlaceholderMessage={() =>
             toast.info(t('users.profile.send_message_soon'))
           }
-          onPlaceholderReport={() =>
-            toast.info(t('users.profile.report_soon'))
-          }
         />
 
         <Tabs
@@ -162,14 +160,12 @@ function PublicProfileHeader({
   blocked,
   onBlocked,
   onPlaceholderMessage,
-  onPlaceholderReport,
 }: {
   profile: PublicUserProfile;
   isSelf: boolean;
   blocked: boolean;
   onBlocked: () => void;
   onPlaceholderMessage: () => void;
-  onPlaceholderReport: () => void;
 }) {
   return (
     <header className="bg-card ring-foreground/10 flex flex-wrap items-center gap-6 rounded-2xl p-6 ring-1 sm:p-8">
@@ -243,15 +239,8 @@ function PublicProfileHeader({
               onBlocked={onBlocked}
             />
           )}
-          <Button
-            type="button"
-            variant="ghost"
-            size="default"
-            className="rounded-full text-xs"
-            onClick={onPlaceholderReport}
-          >
-            {t('users.profile.report')}
-          </Button>
+          {/* Sprint 10 — real abuse-report dialog. */}
+          <ReportButton target_type="user" target_id={profile.id} />
         </div>
       ) : null}
     </header>

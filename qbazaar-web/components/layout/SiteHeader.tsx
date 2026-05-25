@@ -27,6 +27,7 @@ import { Logo } from '@/components/ui/logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { SearchBar } from '@/components/search/SearchBar';
 import { MessagesBadge } from '@/components/messaging/MessagesBadge';
+import { NotificationsBadge } from '@/components/notifications/NotificationsBadge';
 import { cn } from '@/lib/utils';
 import { t } from '@/lib/i18n/messages';
 import { useAuth } from '@/hooks/useAuth';
@@ -122,6 +123,9 @@ export function SiteHeader() {
 
           {/* Messages badge — auto-hides when signed out or count is 0 */}
           <MessagesBadge />
+
+          {/* Notifications badge — bell popover (Sprint 10) */}
+          <NotificationsBadge />
 
           {/* Account */}
           {isHydrated && isAuthenticated ? (
