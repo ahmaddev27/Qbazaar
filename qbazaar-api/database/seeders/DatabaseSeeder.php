@@ -28,6 +28,11 @@ class DatabaseSeeder extends Seeder
             // Sprint 12 — CMS pages + Help center seed data.
             PageSeeder::class,
             HelpSeeder::class,
+            // Demo data (users / ads / convos / offers / favorites / reports /
+            // tickets) — populates the dev site so designers + QA always see a
+            // realistic shape. Last so it can reference categories + locations
+            // + RBAC roles.
+            DemoDataSeeder::class,
         ]);
 
         User::factory()->create([
