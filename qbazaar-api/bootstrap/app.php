@@ -27,6 +27,31 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
+/**
+ * Helper used by the exception renderers — keeps the envelope shape in one place.
+ *
+ * MUST be declared before the `return Application::configure(...)` chain below,
+ * otherwise it never reaches PHP's symbol table (everything after `return` is
+ * dead code) and exception rendering blows up with "undefined function jsonError".
+ *
+ * @param array<string,mixed>|null $details
+ */
+if (! function_exists('jsonError')) {
+    function jsonError(ErrorCode $code, string $message, ?array $details = null, ?string $requestId = null): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'error' => [
+                'code' => $code->value,
+                'message_key' => $code->messageKey(),
+                'message' => $message,
+                'details' => $details,
+                'request_id' => $requestId,
+            ],
+        ], $code->httpStatus());
+    }
+}
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__ . '/../routes/web.php',
@@ -191,23 +216,3 @@ return Application::configure(basePath: dirname(__DIR__))
         });
     })->create();
 
-/**
- * Helper used by the exception renderers — keeps the envelope shape in one place.
- *
- * @param array<string,mixed>|null $details
- */
-if (! function_exists('jsonError')) {
-    function jsonError(ErrorCode $code, string $message, ?array $details = null, ?string $requestId = null): JsonResponse
-    {
-        return response()->json([
-            'success' => false,
-            'error' => [
-                'code' => $code->value,
-                'message_key' => $code->messageKey(),
-                'message' => $message,
-                'details' => $details,
-                'request_id' => $requestId,
-            ],
-        ], $code->httpStatus());
-    }
-}
