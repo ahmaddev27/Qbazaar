@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\AccountType;
+use App\Enums\Language;
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -158,9 +161,9 @@ class RolesAndPermissionsSeeder extends Seeder
                 'full_name' => 'QBazaar Admin',
                 'phone' => '+97455000000',
                 'password' => Hash::make('password'),
-                'account_type' => \App\Enums\AccountType::PRIVATE_INDIVIDUAL->value,
-                'status' => \App\Enums\UserStatus::ACTIVE->value,
-                'language' => \App\Enums\Language::ARABIC->value,
+                'account_type' => AccountType::PRIVATE_INDIVIDUAL->value,
+                'status' => UserStatus::ACTIVE->value,
+                'language' => Language::ARABIC->value,
                 'email_verified' => true,
                 'phone_verified' => true,
             ],

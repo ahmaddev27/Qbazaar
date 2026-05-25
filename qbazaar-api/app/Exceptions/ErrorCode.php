@@ -99,7 +99,10 @@ enum ErrorCode: string
     // ── CMS & Support (Sprint 12) ───────────────────────────────────
     case CMS_PAGE_NOT_FOUND = 'CMS_001';
     case HELP_ARTICLE_NOT_FOUND = 'HELP_001';
+    case HELP_CATEGORY_NOT_FOUND = 'HELP_002';
     case TICKET_NOT_FOUND = 'TICKET_001';
+    case TICKET_FORBIDDEN = 'TICKET_002';
+    case TICKET_INVALID_TRANSITION = 'TICKET_003';
 
     /**
      * i18n key the client should look up in its translations file.
@@ -144,7 +147,8 @@ enum ErrorCode: string
             self::REPORT_INVALID_TARGET,
             self::NOTIF_DEVICE_TOKEN_INVALID,
             self::SEARCH_INVALID_PARAMS,
-            self::SEARCH_SAVED_LIMIT => 422,
+            self::SEARCH_SAVED_LIMIT,
+            self::TICKET_INVALID_TRANSITION => 422,
 
             self::AUTH_INVALID_CREDENTIALS,
             self::AUTH_TOKEN_EXPIRED,
@@ -158,7 +162,8 @@ enum ErrorCode: string
             self::MSG_NOT_PARTICIPANT,
             self::OFFER_NOT_SELLER,
             self::OFFER_FORBIDDEN,
-            self::NOTIF_FORBIDDEN => 403,
+            self::NOTIF_FORBIDDEN,
+            self::TICKET_FORBIDDEN => 403,
 
             self::USER_NOT_FOUND,
             self::CATEGORY_NOT_FOUND,
@@ -172,6 +177,7 @@ enum ErrorCode: string
             self::NOTIF_NOT_FOUND,
             self::CMS_PAGE_NOT_FOUND,
             self::HELP_ARTICLE_NOT_FOUND,
+            self::HELP_CATEGORY_NOT_FOUND,
             self::TICKET_NOT_FOUND => 404,
 
             self::AUTH_OTP_EXPIRED,

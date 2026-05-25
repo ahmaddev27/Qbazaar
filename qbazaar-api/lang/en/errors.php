@@ -218,6 +218,37 @@ return [
         ],
     ],
 
+    'cms' => [
+        'page' => [
+            'not' => [
+                'found' => 'Page not found.',
+            ],
+        ],
+    ],
+
+    'help' => [
+        'article' => [
+            'not' => [
+                'found' => 'Help article not found.',
+            ],
+        ],
+        'category' => [
+            'not' => [
+                'found' => 'Help category not found.',
+            ],
+        ],
+    ],
+
+    'ticket' => [
+        'not' => [
+            'found' => 'Support ticket not found.',
+        ],
+        'forbidden' => 'You are not authorised to access this ticket.',
+        'invalid' => [
+            'transition' => 'This ticket cannot be updated in its current state.',
+        ],
+    ],
+
     'user' => [
         'not' => [
             'found' => 'User not found.',

@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
             // hits a populated table instead of a slow config-fallback.
             RolesAndPermissionsSeeder::class,
             ModerationRulesSeeder::class,
+            // Sprint 12 — CMS pages + Help center seed data.
+            PageSeeder::class,
+            HelpSeeder::class,
         ]);
 
         User::factory()->create([

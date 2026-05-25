@@ -27,7 +27,9 @@ use App\Http\Controllers\Api\V1\Auth\OtpController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetController;
 use App\Http\Controllers\Api\V1\Auth\RefreshTokenController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
+use App\Http\Controllers\Api\V1\Cms\PageController;
 use App\Http\Controllers\Api\V1\Favorites\FavoriteController;
+use App\Http\Controllers\Api\V1\Help\HelpController;
 use App\Http\Controllers\Api\V1\Messaging\ConversationController;
 use App\Http\Controllers\Api\V1\Messaging\MessageController;
 use App\Http\Controllers\Api\V1\Offers\OfferController;
@@ -37,6 +39,7 @@ use App\Http\Controllers\Api\V1\Reference\LocationController;
 use App\Http\Controllers\Api\V1\Reports\ReportsController;
 use App\Http\Controllers\Api\V1\Search\SavedSearchController;
 use App\Http\Controllers\Api\V1\Search\SearchController;
+use App\Http\Controllers\Api\V1\Support\SupportController;
 use App\Http\Controllers\Api\V1\Uploads\AvatarUploadController;
 use App\Http\Controllers\Api\V1\Users\BlockController;
 use App\Http\Controllers\Api\V1\Users\PublicProfileController;
@@ -444,4 +447,35 @@ Route::prefix('users')
             Route::post('/{user}/block', [BlockController::class, 'store'])->name('block.store');
             Route::delete('/{user}/block', [BlockController::class, 'destroy'])->name('block.destroy');
         });
+    });
+
+// ── Sprint 12 — CMS Pages (public, 1h cached) ──────────────────────────────
+Route::prefix('pages')->name('api.v1.pages.')->middleware('throttle:api')->group(function (): void {
+    Route::get('/', [PageController::class, 'index'])->name('index');
+    Route::get('/{slug}', [PageController::class, 'show'])->name('show');
+});
+
+// ── Sprint 12 — Help Center (public) ───────────────────────────────────────
+Route::prefix('help')->name('api.v1.help.')->middleware('throttle:api')->group(function (): void {
+    Route::get('/categories', [HelpController::class, 'categories'])->name('categories');
+    Route::get('/categories/{slug}', [HelpController::class, 'categoryShow'])->name('categories.show');
+    Route::get('/articles/{slug}', [HelpController::class, 'articleShow'])->name('articles.show');
+    Route::get('/search', [HelpController::class, 'search'])->name('search');
+});
+
+// ── Sprint 12 — Support Tickets ────────────────────────────────────────────
+// POST /support/tickets accepts anon submissions; the auth-only endpoints
+// under /account/support/* manage the caller's tickets + replies. Admin
+// staff workflow lives in Filament (Sprint 11 admin panel).
+Route::post('/support/tickets', [SupportController::class, 'store'])
+    ->middleware('throttle:api')
+    ->name('api.v1.support.tickets.store');
+
+Route::prefix('account/support/tickets')
+    ->name('api.v1.account.support.tickets.')
+    ->middleware(['auth:sanctum', 'active.user', 'throttle:api'])
+    ->group(function (): void {
+        Route::get('/', [SupportController::class, 'myTickets'])->name('index');
+        Route::get('/{id}', [SupportController::class, 'show'])->name('show');
+        Route::post('/{id}/reply', [SupportController::class, 'reply'])->name('reply');
     });
