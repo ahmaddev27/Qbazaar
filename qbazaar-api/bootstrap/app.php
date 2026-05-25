@@ -196,16 +196,18 @@ return Application::configure(basePath: dirname(__DIR__))
  *
  * @param array<string,mixed>|null $details
  */
-function jsonError(ErrorCode $code, string $message, ?array $details = null, ?string $requestId = null): JsonResponse
-{
-    return response()->json([
-        'success' => false,
-        'error' => [
-            'code' => $code->value,
-            'message_key' => $code->messageKey(),
-            'message' => $message,
-            'details' => $details,
-            'request_id' => $requestId,
-        ],
-    ], $code->httpStatus());
+if (! function_exists('jsonError')) {
+    function jsonError(ErrorCode $code, string $message, ?array $details = null, ?string $requestId = null): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'error' => [
+                'code' => $code->value,
+                'message_key' => $code->messageKey(),
+                'message' => $message,
+                'details' => $details,
+                'request_id' => $requestId,
+            ],
+        ], $code->httpStatus());
+    }
 }
